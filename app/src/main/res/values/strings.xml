@@ -13,4 +13,11 @@
     <!-- FACEBOOK PURPOSE -->
     <string name="facebook_application_id" translatable="false">329110107817573</string>
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb329110107817573</string>
+
+    <!-- Used in NavigationDrawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_lunch">Votre repas</string>
+    <string name="navigation_drawer_settings">Paramètres</string>
+    <string name="navigation_drawer_logout">Se déconnecter</string>
 </resources>

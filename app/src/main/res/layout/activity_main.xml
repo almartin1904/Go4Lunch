@@ -8,9 +8,47 @@
     android:id="@+id/main_activity_coordinator_layout"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This is main Activity" />
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/activity_main_drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:openDrawer="start"
+        tools:context="com.openclassrooms.mynavdrawer.MainActivity">
+
+        <!-- 1 | MainActivity RootView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <!-- Toolbar -->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/activity_main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:theme="@style/ToolBarStyle"/>
+
+            <!-- FrameLayout for our fragments -->
+            <FrameLayout
+                android:id="@+id/activity_main_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <!-- 2 | NavigationView -->
+        <android.support.design.widget.NavigationView
+            android:id="@+id/activity_main_nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/activity_main_nav_header"
+            app:menu="@menu/activity_main_menu_drawer" />
+
+    </android.support.v4.widget.DrawerLayout>
 
 </android.support.design.widget.CoordinatorLayout>
