@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView mTextViewMail;
     private TextView mTextViewName;
     private ImageView mImageViewProfile;
+    private static final String TAG = "MainActivityName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.configureToolBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
-        this.updateUIWhenCreating();
+
     }
 
     @Override
@@ -61,7 +64,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.handleResponseAfterSignIn(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUIWhenCreating();
+    }
+
     private void startSignInActivity(){
+        Log.d(TAG, "startSignInActivity: ");
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -76,6 +86,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
+
+    private void signOutUserFromFirebase(){
+        Log.d(TAG, "signOutUserFromFirebase: ");
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted());
+    }
 
     // --------------------
     // UI
@@ -107,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void updateUIWhenCreating(){
-
+        Log.d(TAG, "updateUIWhenCreating: ");
         if (this.getCurrentUser() != null){
 
             //Get picture URL from Firebase
@@ -122,10 +139,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ? getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
             String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ? getString(R.string.info_no_username_found) : this.getCurrentUser().getDisplayName();
 
+            Log.d(TAG, "updateUIWhenCreating: name" + username+ " email "+ email);
             //Update views with data
             this.mTextViewName.setText(username);
             this.mTextViewMail.setText(email);
         }
+    }
+
+    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(){
+        return new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                startSignInActivity();
+            }
+        };
     }
 
     //-------------------
@@ -144,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.activity_main_drawer_setting:
                 break;
             case R.id.activity_main_drawer_logout:
+                this.signOutUserFromFirebase();
                 break;
             default:
                 break;
