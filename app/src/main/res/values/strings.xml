@@ -20,4 +20,6 @@
     <string name="navigation_drawer_lunch">Votre repas</string>
     <string name="navigation_drawer_settings">Paramètres</string>
     <string name="navigation_drawer_logout">Se déconnecter</string>
+    <string name="info_no_email_found">Pas d\'adresse mail</string>
+    <string name="info_no_username_found">Inconnu</string>
 </resources>

@@ -10,11 +10,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
@@ -28,17 +36,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int RC_SIGN_IN = 123;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+    private NavigationView mNavigationView;
+    private TextView mTextViewMail;
+    private TextView mTextViewName;
+    private ImageView mImageViewProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         this.startSignInActivity();
         this.configureToolBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
+        this.updateUIWhenCreating();
     }
 
     @Override
@@ -61,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .build(),
                 RC_SIGN_IN);
     }
+
+    FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
 
     // --------------------
     // UI
@@ -88,6 +103,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_unknown_error));
                 }
             }
+        }
+    }
+
+    private void updateUIWhenCreating(){
+
+        if (this.getCurrentUser() != null){
+
+            //Get picture URL from Firebase
+            if (this.getCurrentUser().getPhotoUrl() != null) {
+                Glide.with(this)
+                        .load(this.getCurrentUser().getPhotoUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(mImageViewProfile);
+            }
+
+            //Get email & username from Firebase
+            String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ? getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
+            String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ? getString(R.string.info_no_username_found) : this.getCurrentUser().getDisplayName();
+
+            //Update views with data
+            this.mTextViewName.setText(username);
+            this.mTextViewMail.setText(email);
         }
     }
 
@@ -137,7 +174,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // 3 - Configure NavigationView
     private void configureNavigationView(){
-        this.navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        this.mNavigationView = (NavigationView) findViewById(R.id.activity_main_nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        View header=mNavigationView.getHeaderView(0);
+        this.mTextViewMail = (TextView) header.findViewById(R.id.nav_header_mail_txt);
+        this.mTextViewName = (TextView) header.findViewById(R.id.nav_header_name_txt);
+        this.mImageViewProfile = (ImageView) header.findViewById(R.id.nav_header_profile_img);
     }
 }
