@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_activity_coordinator_layout"
-    tools:context=".MainActivity">
+    tools:context=".Controller.Activities.MainActivity">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/activity_main_drawer_layout"
@@ -32,10 +32,27 @@
                 app:theme="@style/ToolBarStyle"/>
 
             <!-- FrameLayout for our fragments -->
-            <FrameLayout
-                android:id="@+id/activity_main_frame_layout"
+            <!-- 1 | Add TabLayout to handle tabs -->
+
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/activity_main_viewpager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="0dp"
+                android:layout_weight="7"/>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/activity_main_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                app:tabTextColor="@android:color/black"
+                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabIndicatorColor="@android:color/white"
+                android:layout_gravity="bottom"
+                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                />
 
         </LinearLayout>
 

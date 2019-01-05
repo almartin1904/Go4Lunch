@@ -1,10 +1,12 @@
-package com.openclassroom.alice.go4lunch;
+package com.openclassroom.alice.go4lunch.Controller.Activities;
 
 import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,8 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.openclassroom.alice.go4lunch.Model.ViewPagerAdapter;
+import com.openclassroom.alice.go4lunch.R;
 
 import java.util.Arrays;
 
@@ -42,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView mTextViewMail;
     private TextView mTextViewName;
     private ImageView mImageViewProfile;
+    private int[] tabIcons = {
+            R.drawable.map_black_24x24,
+            R.drawable.view_list_black_24x24,
+            R.drawable.people_black_24x24
+    };
     private static final String TAG = "MainActivityName";
 
     @Override
@@ -50,10 +59,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        this.startSignInActivity();
+        if (getCurrentUser()==null){
+            this.startSignInActivity();
+        }
+
         this.configureToolBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
+        this.configureViewPagerAndTabs();
 
     }
 
@@ -124,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void updateUIWhenCreating(){
-        Log.d(TAG, "updateUIWhenCreating: ");
         if (this.getCurrentUser() != null){
 
             //Get picture URL from Firebase
@@ -139,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ? getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
             String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ? getString(R.string.info_no_username_found) : this.getCurrentUser().getDisplayName();
 
-            Log.d(TAG, "updateUIWhenCreating: name" + username+ " email "+ email);
             //Update views with data
             this.mTextViewName.setText(username);
             this.mTextViewMail.setText(email);
@@ -209,4 +220,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.mTextViewName = (TextView) header.findViewById(R.id.nav_header_name_txt);
         this.mImageViewProfile = (ImageView) header.findViewById(R.id.nav_header_profile_img);
     }
+
+    private void configureViewPagerAndTabs(){
+        ViewPager pager = (ViewPager)findViewById(R.id.activity_main_viewpager);
+        pager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+        TabLayout tabs= (TabLayout)findViewById(R.id.activity_main_tabs);
+        tabs.setupWithViewPager(pager);
+        tabs.setTabMode(TabLayout.MODE_FIXED);
+        setupTabIcons(tabs);
+
+    }
+
+    private void setupTabIcons(TabLayout tabLayout) {
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+    }
+
 }
