@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .createSignInIntentBuilder()
                         .setTheme(R.style.LoginTheme)
                         .setAvailableProviders(
-                                Arrays.asList( new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),// SUPPORT GOOGLE
-                                            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build())) //SUPPORT FACEBOOK
+                                Arrays.asList( new AuthUI.IdpConfig.GoogleBuilder().build(),// SUPPORT GOOGLE
+                                            new AuthUI.IdpConfig.FacebookBuilder().build())) //SUPPORT FACEBOOK
                         .setIsSmartLockEnabled(false, true)
                         .setLogo(R.drawable.ic_logo_auth)
                         .build(),
@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
 
     private void signOutUserFromFirebase(){
-        Log.d(TAG, "signOutUserFromFirebase: ");
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted());
@@ -127,9 +126,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else { // ERRORS
                 if (response == null) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_authentication_canceled));
-                } else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_no_internet));
-                } else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_unknown_error));
                 }
             }
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void configureViewPagerAndTabs(){
         ViewPager pager = (ViewPager)findViewById(R.id.activity_main_viewpager);
-        pager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+        pager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), this));
         TabLayout tabs= (TabLayout)findViewById(R.id.activity_main_tabs);
         tabs.setupWithViewPager(pager);
         tabs.setTabMode(TabLayout.MODE_FIXED);
