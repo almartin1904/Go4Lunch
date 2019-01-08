@@ -13,7 +13,7 @@ import retrofit2.http.GET;
  * Created by Alice on 08 January 2019.
  */
 public interface PlacesAPIService {
-    @GET("maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=AIzaSyB0bbKRXlGkEbvEFjxXyACgyAJrZLGS42w")
+    @GET("maps/api/place/nearbysearch/json?location=50.633043,3.020049&radius=500&type=restaurant&key=AIzaSyB0bbKRXlGkEbvEFjxXyACgyAJrZLGS42w")
     Observable<RequestResult> getRestaurantPlaces();
 
     public static final Retrofit retrofit = new Retrofit.Builder()
