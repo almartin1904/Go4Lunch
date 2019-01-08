@@ -27,4 +27,9 @@
     <string name="tablayout_maps">Maps View</string>
     <string name="tablayout_list">List View</string>
     <string name="tablayout_workmates">Workmates</string>
+
+    <!-- Tab Layout-->
+    <string name="google_maps_API_key">AIzaSyD67s89baepSssnpIW9prdJgCQwbQZW1_c</string>
+
+
 </resources>
