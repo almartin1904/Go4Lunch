@@ -1,5 +1,6 @@
 package com.openclassroom.alice.go4lunch.View;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.DistanceResult;
+import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
 import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
@@ -46,7 +48,11 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         try {
             this.mNameTxt.setText(restaurant.getName());
             this.mAddressTxt.setText(restaurant.getAddress());
-            this.mScheduleTxt.setText(restaurant.getOpeningHours().getOpenNowString());
+            if (restaurant.getOpeningHours()!=null) {
+                getOpeningHour(restaurant.getPlaceId());
+            } else {
+                mScheduleTxt.setText("No information");
+            }
             getDistance("place_id:"+restaurant.getPlaceId());
             if (restaurant.getPhotos()!=null) {
                 glide.load(getPhotoURL(restaurant.getPhotos().get(0).getPhotoReference())).apply(RequestOptions.centerCropTransform()).into(mProfileImg);
@@ -76,6 +82,25 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onNext(DistanceResult distanceResult) {
                 mDistanceTxt.setText(distanceResult.getRows().get(0).getElements().get(0).getDistance().getText());
+            }
+
+            @Override
+            public void onError(Throwable e) { }
+
+            @Override
+            public void onComplete() { }
+        });
+
+    }
+
+    private void getOpeningHour(String placeID){
+        this.mDisposable = PlacesAPIStreams.streamFetchDetailPlace(placeID).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
+            @Override
+            public void onNext(PlaceDetailResult placeDetailResult) {
+                if (placeDetailResult.getResult().getOpeningHours().getOpenNowString().equals("Closing Soon")) {
+                    mScheduleTxt.setTextColor(Color.parseColor("#FF0000"));
+                }
+                mScheduleTxt.setText(placeDetailResult.getResult().getOpeningHours().getOpenNowString());
             }
 
             @Override

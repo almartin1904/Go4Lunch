@@ -31,5 +31,8 @@
     <!-- Tab Layout-->
     <string name="google_maps_API_key">AIzaSyD67s89baepSssnpIW9prdJgCQwbQZW1_c</string>
 
+    <!-- Opening hours-->
+    <string name="open24_7">Open 24/7</string>
+
 
 </resources>
