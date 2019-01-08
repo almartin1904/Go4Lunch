@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.DistanceResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
 import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
@@ -46,7 +47,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
             this.mNameTxt.setText(restaurant.getName());
             this.mAddressTxt.setText(restaurant.getAddress());
             this.mScheduleTxt.setText(restaurant.getOpeningHours().getOpenNowString());
-            this.mDistanceTxt.setText(String.valueOf(restaurant.getDistance()));
+            getDistance("place_id:"+restaurant.getPlaceId());
             if (restaurant.getPhotos()!=null) {
                 glide.load(getPhotoURL(restaurant.getPhotos().get(0).getPhotoReference())).apply(RequestOptions.centerCropTransform()).into(mProfileImg);
             }
@@ -69,4 +70,21 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     private String getPhotoURL(String photoReference){
         return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoReference + "&key=AIzaSyB0bbKRXlGkEbvEFjxXyACgyAJrZLGS42w";
     }
+
+    private void getDistance(String placeID){
+        this.mDisposable = PlacesAPIStreams.streamFetchDistance(placeID).subscribeWith(new DisposableObserver<DistanceResult>() {
+            @Override
+            public void onNext(DistanceResult distanceResult) {
+                mDistanceTxt.setText(distanceResult.getRows().get(0).getElements().get(0).getDistance().getText());
+            }
+
+            @Override
+            public void onError(Throwable e) { }
+
+            @Override
+            public void onComplete() { }
+        });
+
+    }
+
 }
