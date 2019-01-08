@@ -1,5 +1,6 @@
 package com.openclassroom.alice.go4lunch.Utils;
 
+import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PhotoUrl;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.RequestResult;
 
 import java.util.concurrent.TimeUnit;
@@ -13,10 +14,11 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class PlacesAPIStreams {
     public static Observable<RequestResult> streamFetchRestaurants() {
-        PlacesAPIService nytArticleService = PlacesAPIService.retrofit.create(PlacesAPIService.class);
-        return nytArticleService.getRestaurantPlaces()
+        PlacesAPIService restaurantService = PlacesAPIService.retrofit.create(PlacesAPIService.class);
+        return restaurantService.getRestaurantPlaces()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
     }
+
 }

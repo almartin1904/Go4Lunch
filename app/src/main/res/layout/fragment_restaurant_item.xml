@@ -1,15 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dip">
+    android:padding="10dip">
 
     <TextView
         android:id="@+id/fragment_main_item_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:text="Le zinc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/fragment_main_item_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="8dp"
+        android:text="12 rue du Faubourg Poissonnière"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_name" />
+
+    <TextView
+        android:id="@+id/fragment_main_item_schedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="8dp"
+        android:textStyle="italic"
+        android:text="Open until 15h"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_address" />
+
+    <ImageView
+        android:id="@+id/fragment_main_item_image"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/local_restaurant_black_54x54"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fragment_main_item_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="120m"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_main_item_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fragment_main_item_number_workmates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:text="(1)"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_main_item_image"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_distance" />
+
+    <ImageView
+        android:id="@+id/fragment_main_item_workmates_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="2dp"
+        android:src="@drawable/perm_identity_black_24x24"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_main_item_number_workmates"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_distance" />
+
+    <ImageView
+        android:id="@+id/fragment_main_item_star_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/star_rate_black_18x18"
+        app:layout_constraintEnd_toStartOf="@id/fragment_main_item_image"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_workmates_img" />
+
+    <ImageView
+        android:id="@+id/fragment_main_item_star_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="0dp"
+        android:src="@drawable/star_rate_black_18x18"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_main_item_star_1"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_workmates_img" />
+
+    <ImageView
+        android:id="@+id/fragment_main_item_star_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="0dp"
+        android:src="@drawable/star_rate_black_18x18"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_main_item_star_2"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_workmates_img" />
+
+
+
+</android.support.constraint.ConstraintLayout>

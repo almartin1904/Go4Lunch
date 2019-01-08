@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.RequestManager;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
 import com.openclassroom.alice.go4lunch.R;
 
@@ -17,10 +18,12 @@ import java.util.List;
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder> {
     // FOR DATA
     private List<Restaurant> mRestaurants;
+    private RequestManager mGlide;
 
     // CONSTRUCTOR
-    public RestaurantAdapter(List<Restaurant> restaurants) {
+    public RestaurantAdapter(List<Restaurant> restaurants, RequestManager glide) {
         this.mRestaurants = restaurants;
+        mGlide=glide;
     }
 
     @Override
@@ -36,7 +39,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     // UPDATE VIEW HOLDER WITH A GITHUBUSER
     @Override
     public void onBindViewHolder(RestaurantViewHolder viewHolder, int position) {
-        viewHolder.updateWithGithubUser(this.mRestaurants.get(position));
+        viewHolder.updateWithRestaurants(this.mRestaurants.get(position), mGlide);
     }
 
     // RETURN THE TOTAL COUNT OF ITEMS IN THE LIST

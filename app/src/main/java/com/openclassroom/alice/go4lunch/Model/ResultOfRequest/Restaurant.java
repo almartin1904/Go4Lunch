@@ -1,5 +1,7 @@
 package com.openclassroom.alice.go4lunch.Model.ResultOfRequest;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,6 +11,9 @@ import java.util.List;
  * Created by Alice on 08 January 2019.
  */
 public class Restaurant {
+
+    private static final String TAG = Restaurant.class.getSimpleName();
+    
     @SerializedName("geometry")
     @Expose
     private Geometry geometry;
@@ -53,7 +58,7 @@ public class Restaurant {
     private Integer userRatingsTotal;
     @SerializedName("vicinity")
     @Expose
-    private String vicinity;
+    private String address;
 
     public Geometry getGeometry() {
         return geometry;
@@ -135,6 +140,11 @@ public class Restaurant {
         this.rating = rating;
     }
 
+    public Double getRatingStars(){
+        Log.d(TAG, "getRatingStars " + name + ": "+ rating/5*3);
+        return rating/5*3;
+    }
+
     public String getReference() {
         return reference;
     }
@@ -167,11 +177,15 @@ public class Restaurant {
         this.userRatingsTotal = userRatingsTotal;
     }
 
-    public String getVicinity() {
-        return vicinity;
+    public String getAddress() {
+        return address;
     }
 
-    public void setVicinity(String vicinity) {
-        this.vicinity = vicinity;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getDistance(){
+        return 0;
     }
 }

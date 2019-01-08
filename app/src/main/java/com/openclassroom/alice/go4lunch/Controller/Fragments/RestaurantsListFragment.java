@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.RequestResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
 import com.openclassroom.alice.go4lunch.R;
@@ -66,7 +67,7 @@ public class RestaurantsListFragment extends Fragment {
 
     private void configureRecyclerView() {
         this.mRestaurants = new ArrayList<>();
-        this.mAdapter = new RestaurantAdapter(this.mRestaurants);
+        this.mAdapter = new RestaurantAdapter(this.mRestaurants, Glide.with(this));
         this.recyclerView.setAdapter(this.mAdapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }

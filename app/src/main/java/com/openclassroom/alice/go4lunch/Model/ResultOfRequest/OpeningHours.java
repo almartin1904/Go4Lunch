@@ -15,6 +15,14 @@ public class OpeningHours {
         return openNow;
     }
 
+    public String getOpenNowString() {
+        if (openNow){
+            return "Open";
+        } else {
+            return "Closed";
+        }
+    }
+
     public void setOpenNow(Boolean openNow) {
         this.openNow = openNow;
     }

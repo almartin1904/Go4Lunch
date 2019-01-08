@@ -1,5 +1,7 @@
 package com.openclassroom.alice.go4lunch.Model.ResultOfRequest;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,6 +11,9 @@ import java.util.List;
  * Created by Alice on 08 January 2019.
  */
 public class Photo {
+
+    private static final String TAG = Photo.class.getSimpleName();
+
     @SerializedName("height")
     @Expose
     private Integer height;
