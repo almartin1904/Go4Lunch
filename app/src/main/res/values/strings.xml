@@ -34,5 +34,9 @@
     <!-- Opening hours-->
     <string name="open24_7">Open 24/7</string>
 
+    <!-- Restaurant Card -->
+    <string name="call">Call</string>
+    <string name="like">Like</string>
+    <string name="website">Website</string>
 
 </resources>

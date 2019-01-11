@@ -1,5 +1,6 @@
 package com.openclassroom.alice.go4lunch.Model.ResultOfRequest;
 
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.google.gson.annotations.Expose;
