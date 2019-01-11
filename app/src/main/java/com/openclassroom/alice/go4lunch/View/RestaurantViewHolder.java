@@ -15,6 +15,8 @@ import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
 import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
@@ -48,36 +50,42 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         try {
             this.mNameTxt.setText(restaurant.getName());
             this.mAddressTxt.setText(restaurant.getAddress());
-            if (restaurant.getOpeningHours()!=null) {
-                getOpeningHour(restaurant.getPlaceId());
-            } else {
-                mScheduleTxt.setText("No information");
-            }
-            getDistance("place_id:"+restaurant.getPlaceId());
-            if (restaurant.getPhotos()!=null) {
-                glide.load(getPhotoURL(restaurant.getPhotos().get(0).getPhotoReference())).apply(RequestOptions.centerCropTransform()).into(mProfileImg);
-            }
-            if (restaurant.getRatingStars()<2){
-                mStarImg3.setVisibility(View.GONE);
-            } else {
-                mStarImg3.setVisibility(View.VISIBLE);
-            }
-            if (restaurant.getRatingStars()<1){
-                mStarImg2.setVisibility(View.GONE);
-            } else {
-                mStarImg2.setVisibility(View.VISIBLE);
-            }
+
+            setOpeningHour(restaurant);
+            setDistance("place_id:"+restaurant.getPlaceId());
+            setPhoto(restaurant, glide);
+            setStars(restaurant);
         } catch (Exception e){
             Log.e(TAG, "updateWithRestaurants: " + restaurant.getName() + " : "+ e.getMessage());
         }
 
     }
 
+    private void setPhoto(Restaurant restaurant, RequestManager glide) {
+        if (restaurant.getPhotos()!=null) {
+            glide.load(getPhotoURL(restaurant.getPhotos().get(0).getPhotoReference())).apply(RequestOptions.centerCropTransform()).into(mProfileImg);
+        }
+    }
+
+
+    private void setStars(Restaurant restaurant) {
+        if (restaurant.getRatingStars()<2){
+            mStarImg3.setVisibility(View.GONE);
+        } else {
+            mStarImg3.setVisibility(View.VISIBLE);
+        }
+        if (restaurant.getRatingStars()<1){
+            mStarImg2.setVisibility(View.GONE);
+        } else {
+            mStarImg2.setVisibility(View.VISIBLE);
+        }
+    }
+
     private String getPhotoURL(String photoReference){
         return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoReference + "&key=AIzaSyB0bbKRXlGkEbvEFjxXyACgyAJrZLGS42w";
     }
 
-    private void getDistance(String placeID){
+    private void setDistance(String placeID){
         this.mDisposable = PlacesAPIStreams.streamFetchDistance(placeID).subscribeWith(new DisposableObserver<DistanceResult>() {
             @Override
             public void onNext(DistanceResult distanceResult) {
@@ -93,23 +101,30 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    private void getOpeningHour(String placeID){
-        this.mDisposable = PlacesAPIStreams.streamFetchDetailPlace(placeID).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
-            @Override
-            public void onNext(PlaceDetailResult placeDetailResult) {
-                if (placeDetailResult.getResult().getOpeningHours().getOpenNowString().equals("Closing Soon")) {
-                    mScheduleTxt.setTextColor(Color.parseColor("#FF0000"));
+    private void setOpeningHour(Restaurant restaurant){
+        final int currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1;
+        final int currentHour = Calendar.getInstance().get(Calendar.HOUR)+12;
+        final int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
+        if (restaurant.getOpeningHours()!=null) {
+            this.mDisposable = PlacesAPIStreams.streamFetchDetailPlace(restaurant.getPlaceId()).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
+                @Override
+                public void onNext(PlaceDetailResult placeDetailResult) {
+                    if (placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute).equals("Closing Soon")) {
+                        mScheduleTxt.setTextColor(Color.RED);
+                    } else {
+                        mScheduleTxt.setTextColor(Color.BLACK);
+                    }
+                    mScheduleTxt.setText(placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute));
                 }
-                mScheduleTxt.setText(placeDetailResult.getResult().getOpeningHours().getOpenNowString());
-            }
 
-            @Override
-            public void onError(Throwable e) { }
+                @Override
+                public void onError(Throwable e) { }
 
-            @Override
-            public void onComplete() { }
-        });
-
+                @Override
+                public void onComplete() { }
+            });
+        } else {
+            mScheduleTxt.setText("No information");
+        }
     }
-
 }

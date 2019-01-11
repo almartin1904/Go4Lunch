@@ -1,19 +1,25 @@
 package com.openclassroom.alice.go4lunch.Controller.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.openclassroom.alice.go4lunch.Controller.Activities.MainActivity;
+import com.openclassroom.alice.go4lunch.Controller.Activities.RestaurantCardActivity;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.RequestResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
 import com.openclassroom.alice.go4lunch.R;
+import com.openclassroom.alice.go4lunch.Utils.ItemClickSupport;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 import com.openclassroom.alice.go4lunch.View.RestaurantAdapter;
 
@@ -30,10 +36,14 @@ import io.reactivex.observers.DisposableObserver;
  */
 public class RestaurantsListFragment extends Fragment {
 
+    private static final String CARD_DETAILS = "CARD_DETAILS";
     @BindView(R.id.fragment_main_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.fragment_listview_swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+
     Disposable mDisposable;
     private List<Restaurant> mRestaurants;
     private RestaurantAdapter mAdapter;
+    private static final String TAG = RestaurantsListFragment.class.getSimpleName();
 
     public RestaurantsListFragment() {
         // Required empty public constructor
@@ -52,6 +62,8 @@ public class RestaurantsListFragment extends Fragment {
         ButterKnife.bind(this, view);
         this.configureRecyclerView();
         this.executeHTTPRequest();
+        this.configureSwipeRefreshLayout();
+        this.configureOnClickRecyclerView();
         return view;
     }
 
@@ -70,6 +82,28 @@ public class RestaurantsListFragment extends Fragment {
         this.mAdapter = new RestaurantAdapter(this.mRestaurants, Glide.with(this));
         this.recyclerView.setAdapter(this.mAdapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    private void configureSwipeRefreshLayout(){
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                executeHTTPRequest();
+            }
+        });
+    }
+
+    private void configureOnClickRecyclerView(){
+        ItemClickSupport.addTo(recyclerView, R.layout.fragment_restaurant_item)
+                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Restaurant restaurant = mAdapter.getRestaurant(position);
+                        Intent restaurantCardActivity = new Intent(getActivity(), RestaurantCardActivity.class);
+                        restaurantCardActivity.putExtra(CARD_DETAILS, restaurant.getPlaceId());
+                        startActivity(restaurantCardActivity);
+                    }
+                });
     }
 
     // -------------------
@@ -102,6 +136,8 @@ public class RestaurantsListFragment extends Fragment {
     // -------------------
 
     private void updateUI(List<Restaurant> restaurants){
+        swipeRefreshLayout.setRefreshing(false);
+        mRestaurants.clear();
         mRestaurants.addAll(restaurants);
         mAdapter.notifyDataSetChanged();
     }

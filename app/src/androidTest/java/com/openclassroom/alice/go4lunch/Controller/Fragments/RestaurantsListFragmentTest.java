@@ -1,5 +1,7 @@
 package com.openclassroom.alice.go4lunch.Controller.Fragments;
 
+import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.OpeningHours;
+import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.RequestResult;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 
@@ -16,15 +18,16 @@ import static org.junit.Assert.*;
 public class RestaurantsListFragmentTest {
     @Test
     public void fetchArticleTopStories() throws Exception {
-        Observable<RequestResult> observableUsers = PlacesAPIStreams.streamFetchRestaurants();
-        TestObserver<RequestResult> testObserver = new TestObserver<>();
-        observableUsers.subscribeWith(testObserver)
+        Observable<PlaceDetailResult> observableDetail = PlacesAPIStreams.streamFetchDetailPlace("ChIJK2CVUV7VwkcRedYLyCXbmhs");
+        TestObserver<PlaceDetailResult> testObserver = new TestObserver<>();
+        observableDetail.subscribeWith(testObserver)
                 .assertNoErrors()
                 .assertNoTimeout()
                 .awaitTerminalEvent();
 
-        RequestResult restaurantsFetched = testObserver.values().get(0);
-        assertEquals("Cruise Bar, Restaurant & Events", restaurantsFetched.getResults().get(0).getName());
+        PlaceDetailResult DetailsFetched = testObserver.values().get(0);
+        OpeningHours openingHours=DetailsFetched.getResult().getOpeningHours();
+        assertEquals("Open until 23.30pm", openingHours.getOpenNowString(0, 15, 0));
     }
 
 }
