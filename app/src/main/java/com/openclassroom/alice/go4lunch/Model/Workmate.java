@@ -12,6 +12,8 @@ public class Workmate {
     private String restaurantPlaceId;
     @Nullable private String urlPicture;
 
+    public Workmate() { }
+
     public Workmate(String uid, String name, String mail, @Nullable String urlPicture) {
         this.uid = uid;
         this.name = name;

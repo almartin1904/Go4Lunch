@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.openclassroom.alice.go4lunch.Model.ViewPagerAdapter;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
@@ -39,6 +40,8 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.openclassroom.alice.go4lunch.Constantes.CARD_DETAILS;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -125,8 +128,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
+                this.createUserInFirestore();
                 showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
-
             } else { // ERRORS
                 if (response == null) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_authentication_canceled));
@@ -157,6 +160,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             //Update views with data
             this.mTextViewName.setText(username);
             this.mTextViewMail.setText(email);
+
+            WorkmateHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Workmate currentWorkmate = documentSnapshot.toObject(Workmate.class);
+                    String username = TextUtils.isEmpty(currentWorkmate.getName()) ? getString(R.string.info_no_username_found) : currentWorkmate.getName();
+                    Log.d(TAG, "onSuccess: "+username);
+                    mTextViewName.setText(username);
+                }
+            });
         }
     }
 
@@ -183,6 +196,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.activity_main_drawer_lunch :
                 break;
             case R.id.activity_main_drawer_setting:
+                Intent settingsActivity = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsActivity);
                 break;
             case R.id.activity_main_drawer_logout:
                 this.signOutUserFromFirebase();

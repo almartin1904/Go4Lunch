@@ -41,7 +41,11 @@
 
     <!-- Settings -->
     <string name="profile">Your Profile</string>
-    <string name="username">Name</string>
+    <string name="username">Name :</string>
     <string name="delete">Delete my account</string>
+    <string name="popup_message_confirmation_delete_account">Are you sure you want to delete account ?</string>
+    <string name="popup_message_choice_yes">Yes !</string>
+    <string name="popup_message_choice_no">No</string>
+    <string name="email_address">Email : </string>
 
 </resources>

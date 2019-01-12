@@ -33,6 +33,10 @@ public class WorkmateHelper {
 
     // --- UPDATE ---
 
+    public static Task<Void> updateUsername(String username, String uid) {
+        return WorkmateHelper.getUsersCollection().document(uid).update("username", username);
+    }
+
     public static Task<Void> updateRestaurantID(String uid, String restaurantPlaceId) {
         return WorkmateHelper.getUsersCollection().document(uid).update("restaurantPlaceId", restaurantPlaceId);
     }
