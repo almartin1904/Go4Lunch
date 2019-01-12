@@ -40,7 +40,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     @BindView(R.id.main_activity_coordinator_layout) CoordinatorLayout coordinatorLayout;
 
@@ -59,10 +59,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = "MainActivityName";
 
     @Override
+    public int getFragmentLayout() { return R.layout.activity_main; }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
         if (getCurrentUser()==null){
             this.startSignInActivity();
@@ -102,8 +103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .build(),
                 RC_SIGN_IN);
     }
-
-    FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
 
     private void signOutUserFromFirebase(){
         AuthUI.getInstance()
@@ -258,14 +257,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             WorkmateHelper.createUser(uid, username, urlPicture, mail).addOnFailureListener(this.onFailureListener());
         }
     }
-
-    private OnFailureListener onFailureListener(){
-        return new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
-            }
-        };
-    }
-
 }
