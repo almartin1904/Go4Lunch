@@ -39,4 +39,9 @@
     <string name="like">Like</string>
     <string name="website">Website</string>
 
+    <!-- Settings -->
+    <string name="profile">Your Profile</string>
+    <string name="username">Name</string>
+    <string name="delete">Delete my account</string>
+
 </resources>

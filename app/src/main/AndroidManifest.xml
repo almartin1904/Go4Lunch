@@ -3,7 +3,7 @@
     package="com.openclassroom.alice.go4lunch">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controller.Activities.RestaurantCardActivity"></activity>
+        <activity android:name=".Controller.Activities.RestaurantCardActivity" />
+        <activity android:name=".Controller.Activities.SettingsActivity"></activity>
     </application>
 
 </manifest>

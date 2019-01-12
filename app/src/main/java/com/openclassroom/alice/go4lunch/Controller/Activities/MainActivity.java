@@ -1,6 +1,7 @@
 package com.openclassroom.alice.go4lunch.Controller.Activities;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -18,16 +19,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.openclassroom.alice.go4lunch.Model.ViewPagerAdapter;
+import com.openclassroom.alice.go4lunch.Model.Workmate;
+import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
 
 import java.util.Arrays;
@@ -234,6 +239,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+    }
+
+    // --------------------
+    // REST REQUEST
+    // --------------------
+
+    // 1 - Http request that create user in firestore
+    private void createUserInFirestore(){
+
+        if (this.getCurrentUser() != null){
+
+            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+            String username = this.getCurrentUser().getDisplayName();
+            String uid = this.getCurrentUser().getUid();
+            String mail = this.getCurrentUser().getEmail();
+
+            WorkmateHelper.createUser(uid, username, urlPicture, mail).addOnFailureListener(this.onFailureListener());
+        }
+    }
+
+    private OnFailureListener onFailureListener(){
+        return new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
+            }
+        };
     }
 
 }
