@@ -31,12 +31,14 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.openclassroom.alice.go4lunch.Constantes.CARD_DETAILS;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RestaurantsListFragment extends Fragment {
 
-    private static final String CARD_DETAILS = "CARD_DETAILS";
+
     @BindView(R.id.fragment_main_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.fragment_listview_swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
