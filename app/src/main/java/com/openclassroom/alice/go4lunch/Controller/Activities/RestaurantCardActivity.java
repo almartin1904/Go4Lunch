@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +16,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.DistanceResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
+import com.openclassroom.alice.go4lunch.Model.Workmate;
+import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 
@@ -29,13 +34,14 @@ import io.reactivex.observers.DisposableObserver;
 import static com.openclassroom.alice.go4lunch.Constantes.CARD_DETAILS;
 
 
-public class RestaurantCardActivity extends AppCompatActivity {
+public class RestaurantCardActivity extends BaseActivity {
 
     private Disposable mDisposable;
     private String mWebsite;
     private String mPhoneNumber;
     private boolean isMyLunch=false;
     private static final String TAG = RestaurantCardActivity.class.getSimpleName();
+    private String mPlaceId;
 
     @BindView(R.id.restaurant_name_txt) TextView nameTxt;
     @BindView(R.id.restaurant_address_txt) TextView addressTxt;
@@ -45,13 +51,31 @@ public class RestaurantCardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_restaurant_card);
 
-        ButterKnife.bind(this);
         Intent i=getIntent();
-        String placeId = (String) i.getSerializableExtra(CARD_DETAILS);
+        mPlaceId = (String) i.getSerializableExtra(CARD_DETAILS);
 
-        executeHttpRequest(placeId);
+        this.executeHttpRequest(mPlaceId);
+        this.updateUiWhenCreating();
+    }
+
+    private void updateUiWhenCreating() {
+        WorkmateHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Workmate currentUser = documentSnapshot.toObject(Workmate.class);
+                String registeredPlaceId = TextUtils.isEmpty(currentUser.getRestaurantPlaceId()) ? "" : currentUser.getRestaurantPlaceId();
+                if (registeredPlaceId.equals(mPlaceId)){
+                    isMyLunch=true;
+                    checkBtn.setImageResource(R.drawable.check_coloraccent);
+                }
+            }
+        });
+    }
+
+    @Override
+    public int getFragmentLayout() {
+        return R.layout.activity_restaurant_card;
     }
 
     private void executeHttpRequest(String placeId) {
@@ -113,7 +137,18 @@ public class RestaurantCardActivity extends AppCompatActivity {
                     isMyLunch=true;
                     checkBtn.setImageResource(R.drawable.check_coloraccent);
                 }
+                updateCheckedRestaurant(isMyLunch);
                 break;
+        }
+    }
+
+    private void updateCheckedRestaurant(boolean isMyLunch){
+        if (this.getCurrentUser() != null) {
+            if (isMyLunch) {
+                WorkmateHelper.updateRestaurantID(this.getCurrentUser().getUid(), this.mPlaceId).addOnFailureListener(this.onFailureListener());
+            } else {
+                WorkmateHelper.updateRestaurantID(this.getCurrentUser().getUid(), "").addOnFailureListener(this.onFailureListener());
+            }
         }
     }
 }
