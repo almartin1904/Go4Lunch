@@ -48,4 +48,8 @@
     <string name="popup_message_choice_no">No</string>
     <string name="email_address">Email : </string>
 
+    <!-- Your Lunch -->
+    <string name="your_lunch_dialog_title">Today\'s lunch</string>
+    <string name="your_lunch_dialog_message">You are eating at </string>
+
 </resources>

@@ -9,9 +9,14 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
+import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.RequestResult;
 import com.openclassroom.alice.go4lunch.R;
+import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by Alice on 12 January 2019.
@@ -48,4 +53,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         };
     }
+
+
 }

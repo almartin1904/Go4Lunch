@@ -1,5 +1,6 @@
 package com.openclassroom.alice.go4lunch.Controller.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -10,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -31,15 +33,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.ViewPagerAdapter;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
+import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 
 import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 
 import static com.openclassroom.alice.go4lunch.Constantes.CARD_DETAILS;
 
@@ -187,13 +193,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     //-------------------
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(final MenuItem item) {
 
         // 4 - Handle Navigation Item Click
         int id = item.getItemId();
 
         switch (id){
             case R.id.activity_main_drawer_lunch :
+                WorkmateHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Workmate currentWorkmate = documentSnapshot.toObject(Workmate.class);
+                        String placeId = TextUtils.isEmpty(currentWorkmate.getRestaurantPlaceId()) ? "" : currentWorkmate.getRestaurantPlaceId();
+                        Intent restaurantCardActivity = new Intent(MainActivity.this, RestaurantCardActivity.class);
+                        restaurantCardActivity.putExtra(CARD_DETAILS, placeId);
+                        startActivity(restaurantCardActivity);
+                    }
+                });
+
                 break;
             case R.id.activity_main_drawer_setting:
                 Intent settingsActivity = new Intent(MainActivity.this, SettingsActivity.class);
@@ -210,6 +227,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         return true;
     }
+
 
     // ---------------------
     // CONFIGURATION
