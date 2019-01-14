@@ -15,7 +15,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
         android:textStyle="bold"
-        android:text="Le zinc"
+        tools:text="Le zinc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
-        android:text="12 rue du Faubourg Poissonnière"
+        tools:text="12 rue du Faubourg Poissonnière"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_name" />
 
@@ -36,7 +36,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
         android:textStyle="italic"
-        android:text="Open until 15h"
+        tools:text="Open until 15h"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_address" />
 
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="120m"
+        tools:text="120m"
         app:layout_constraintEnd_toStartOf="@+id/fragment_main_item_image"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        android:text="(1)"
+        tools:text="(1)"
         app:layout_constraintEnd_toStartOf="@+id/fragment_main_item_image"
         app:layout_constraintTop_toBottomOf="@+id/fragment_main_item_distance" />
 

@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.openclassroom.alice.go4lunch.BuildConfig;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.DistanceResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
@@ -127,7 +128,7 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
 
                 try {
                     Glide.with(getApplicationContext())
-                            .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ placeDetailResult.getResult().getPhotos().get(0).getPhotoReference()+ "&key=AIzaSyB0bbKRXlGkEbvEFjxXyACgyAJrZLGS42w")
+                            .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ placeDetailResult.getResult().getPhotos().get(0).getPhotoReference()+ "&key="+BuildConfig.GOOGLE_API_KEY)
                             .apply(RequestOptions.centerCropTransform())
                             .into(photoImg);
                 } catch (Exception e){

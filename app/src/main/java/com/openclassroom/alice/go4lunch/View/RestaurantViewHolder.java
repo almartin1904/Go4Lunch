@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.openclassroom.alice.go4lunch.BuildConfig;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.DistanceResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
@@ -92,7 +93,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String getPhotoURL(String photoReference){
-        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoReference + "&key=AIzaSyB0bbKRXlGkEbvEFjxXyACgyAJrZLGS42w";
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoReference + "&key="+BuildConfig.GOOGLE_API_KEY;
     }
 
     private String computeDistance(double deviceLat, double restaurantLat, double deviceLng, double restaurantLng) {
