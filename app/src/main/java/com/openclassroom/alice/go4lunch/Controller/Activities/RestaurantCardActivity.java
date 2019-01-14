@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,14 +18,18 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.DistanceResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
+import com.openclassroom.alice.go4lunch.View.WorkmateAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,10 +37,12 @@ import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.openclassroom.alice.go4lunch.Constantes.ACTIVITY_RESTAURANT_CARD;
 import static com.openclassroom.alice.go4lunch.Constantes.CARD_DETAILS;
+import static java.security.AccessController.getContext;
 
 
-public class RestaurantCardActivity extends BaseActivity {
+public class RestaurantCardActivity extends BaseActivity implements WorkmateAdapter.Listener{
 
     private Disposable mDisposable;
     private String mWebsite;
@@ -42,11 +50,13 @@ public class RestaurantCardActivity extends BaseActivity {
     private boolean isMyLunch=false;
     private static final String TAG = RestaurantCardActivity.class.getSimpleName();
     private String mPlaceId;
+    private WorkmateAdapter mWorkmateAdapter;
 
     @BindView(R.id.restaurant_name_txt) TextView nameTxt;
     @BindView(R.id.restaurant_address_txt) TextView addressTxt;
     @BindView(R.id.restaurant_imageView) ImageView photoImg;
     @BindView(R.id.check_btn) FloatingActionButton checkBtn;
+    @BindView(R.id.activity_restaurant_card_recyclerview) RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +67,34 @@ public class RestaurantCardActivity extends BaseActivity {
 
         this.executeHttpRequest(mPlaceId);
         this.updateUiWhenCreating();
+        this.configureRecyclerView();
+    }
+
+    private void configureRecyclerView() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            this.mWorkmateAdapter =
+                    new WorkmateAdapter(generateOptionsForAdapter(WorkmateHelper.getWorkmatesGoingToARestaurant(mPlaceId)),
+                            Glide.with(this),
+                            this,
+                            this,
+                            ACTIVITY_RESTAURANT_CARD);
+            mWorkmateAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onItemRangeInserted(int positionStart, int itemCount) {
+                    mRecyclerView.smoothScrollToPosition(mWorkmateAdapter.getItemCount());
+                }
+
+            });
+        }
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(this.mWorkmateAdapter);
+    }
+
+    private FirestoreRecyclerOptions<Workmate> generateOptionsForAdapter(Query query){
+        return new FirestoreRecyclerOptions.Builder<Workmate>()
+                .setQuery(query, Workmate.class)
+                .setLifecycleOwner(this)
+                .build();
     }
 
     private void updateUiWhenCreating() {
@@ -151,6 +189,15 @@ public class RestaurantCardActivity extends BaseActivity {
                 WorkmateHelper.updateRestaurantID(this.getCurrentUser().getUid(), "").addOnFailureListener(this.onFailureListener());
                 WorkmateHelper.updateNameOfRestaurant(this.getCurrentUser().getUid(), "").addOnFailureListener(this.onFailureListener());
             }
+        }
+    }
+
+    @Override
+    public void onDataChanged() {
+        if (mWorkmateAdapter.getItemCount()==0){
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
 }

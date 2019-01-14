@@ -18,6 +18,9 @@ import com.openclassroom.alice.go4lunch.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.openclassroom.alice.go4lunch.Constantes.ACTIVITY_RESTAURANT_CARD;
+import static com.openclassroom.alice.go4lunch.Constantes.FRAGMENT_LIST_WORKMATE;
+
 /**
  * Created by Alice on 12 January 2019.
  */
@@ -34,13 +37,22 @@ public class WorkmateViewHolder extends RecyclerView.ViewHolder {
         mContext=context;
     }
 
-    public void updateWithWorkmate(Workmate workmate, RequestManager glide){
+    public void updateWithWorkmate(Workmate workmate, RequestManager glide, int origin){
 
-        String temp;
+        String temp="";
         if (workmate.getRestaurantPlaceId().equals("")){
             temp=workmate.getFirstName()+mContext.getResources().getString(R.string.no_restaurant_picked);
         } else {
-            temp=workmate.getFirstName()+mContext.getResources().getString(R.string.restaurant_picked)+workmate.getNameOfRestaurant();
+            switch (origin){
+                case FRAGMENT_LIST_WORKMATE:
+                    temp=workmate.getFirstName()+mContext.getResources().getString(R.string.restaurant_picked)+workmate.getNameOfRestaurant();
+                    break;
+                case ACTIVITY_RESTAURANT_CARD:
+                    temp=workmate.getFirstName()+mContext.getResources().getString(R.string.joining);
+                    break;
+                default:
+                    break;
+            }
         }
 
         mRestaurantTxt.setText(temp);

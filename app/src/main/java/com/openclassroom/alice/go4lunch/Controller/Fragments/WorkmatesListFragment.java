@@ -27,6 +27,8 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.openclassroom.alice.go4lunch.Constantes.FRAGMENT_LIST_WORKMATE;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -75,7 +77,8 @@ public class WorkmatesListFragment extends Fragment implements WorkmateAdapter.L
                     new WorkmateAdapter(generateOptionsForAdapter(WorkmateHelper.getAllWorkMates()),
                             Glide.with(this),
                             this,
-                            getContext());
+                            getContext(),
+                            FRAGMENT_LIST_WORKMATE);
             mWorkmateAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
                 public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -109,7 +112,6 @@ public class WorkmatesListFragment extends Fragment implements WorkmateAdapter.L
         } else {
             mRecyclerView.setVisibility(View.VISIBLE);
         }
-        //mRecyclerView.setVisibility(this.mWorkmateAdapter.getItemCount() == 0 ? View.VISIBLE : View.VISIBLE);
     }
 
 }

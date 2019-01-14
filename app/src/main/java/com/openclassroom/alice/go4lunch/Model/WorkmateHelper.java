@@ -24,7 +24,6 @@ private static final String DATA_RESTAURANT_NAME = "nameOfRestaurant";
     // --- COLLECTION REFERENCE ---
 
     public static CollectionReference getUsersCollection(){
-        Log.d(TAG, "getUsersCollection: "+FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document().getId());
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 
@@ -45,6 +44,13 @@ private static final String DATA_RESTAURANT_NAME = "nameOfRestaurant";
         Log.d(TAG, "getAllWorkMates: ");
         return WorkmateHelper.getUsersCollection()
                 .orderBy(DATA_RESTAURANT_NAME)
+                .limit(10);
+    }
+
+    public static Query getWorkmatesGoingToARestaurant(String placeId){
+        Log.d(TAG, "getAllWorkMates: ");
+        return WorkmateHelper.getUsersCollection()
+                .whereEqualTo(DATA_PLACE_ID_RESTAURANT, placeId)
                 .limit(10);
     }
 

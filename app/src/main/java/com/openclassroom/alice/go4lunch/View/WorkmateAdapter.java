@@ -28,22 +28,24 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<Workmate, Workmate
 
     //FOR DATA
     private final RequestManager glide;
+    private int mOrigin;
 
     //FOR COMMUNICATION
     private Listener callback;
 
-    public WorkmateAdapter(@NonNull FirestoreRecyclerOptions<Workmate> options, RequestManager glide, Listener callback, Context context) {
+    public WorkmateAdapter(@NonNull FirestoreRecyclerOptions<Workmate> options, RequestManager glide, Listener callback, Context context, int origin) {
         super(options);
-        Log.d(TAG, "WorkmateAdapter: ");
+        Log.d(TAG, "WorkmateAdapter: "+options.toString());
         this.glide = glide;
         this.callback = callback;
         this.mContext = context;
+        this.mOrigin=origin;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull WorkmateViewHolder holder, int position, @NonNull Workmate model) {
         Log.d(TAG, "onBindViewHolder: "+position);
-        holder.updateWithWorkmate(model, this.glide);
+        holder.updateWithWorkmate(model, this.glide, mOrigin);
     }
 
     @Override
