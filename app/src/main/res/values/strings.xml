@@ -34,6 +34,10 @@
 
     <!-- Opening hours-->
     <string name="open24_7">Open 24/7</string>
+    <string name="open">Open until\u0020</string>
+    <string name="closing_soon">Closing soon</string>
+    <string name="closed">Closed</string>
+    <string name="no_hour_information">Closed</string>
 
     <!-- Restaurant Card -->
     <string name="call">Call</string>

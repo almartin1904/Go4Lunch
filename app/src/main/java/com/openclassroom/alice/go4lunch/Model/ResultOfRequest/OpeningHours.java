@@ -10,6 +10,11 @@ import com.openclassroom.alice.go4lunch.R;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.openclassroom.alice.go4lunch.Constantes.CLOSED;
+import static com.openclassroom.alice.go4lunch.Constantes.CLOSING_SOON;
+import static com.openclassroom.alice.go4lunch.Constantes.OPEN;
+import static com.openclassroom.alice.go4lunch.Constantes.OPEN_24_7;
+
 /**
  * Created by Alice on 08 January 2019.
  */
@@ -29,12 +34,29 @@ public class OpeningHours {
 
     }
 
-    public String getOpenNowString(int currentDayOfWeek, int currentHour, int currentMinute) {
+    public int getOpenNowString(int currentDayOfWeek, int currentHour, int currentMinute) {
+        int closingStatus;
         if (openNow){
-            return "Open";
+            if (closingSoon(getClosingHour(currentDayOfWeek, currentHour), currentHour, currentMinute)){
+                return CLOSING_SOON;
+            } else {
+                return OPEN;
+            }
+            //"Open until "+ getHourWithFormat(getClosingHour(currentDayOfWeek, currentHour, currentMinute));
         } else {
-            return "Closed";
+            return CLOSED;
         }
+    }
+
+    public String getClosingHour(int currentDayOfWeek, int currentHour) {
+        int i=0;
+        while (periods.get(i).getClose().getDay()<currentDayOfWeek){
+            i=i+1;
+        }
+        if (Integer.parseInt(periods.get(i).getClose().getTime().substring(0,2))<currentHour){
+            i=i+1;
+        }
+        return periods.get(i).getClose().getTime();
     }
 
     private boolean closingSoon(String time, int currentHour, int currentMinute) {
@@ -44,9 +66,9 @@ public class OpeningHours {
     }
 
 
-    private String getHourWithFormat(String time) {
+    public String getHourWithFormat(String time) {
         int hour=Integer.parseInt(time.substring(0,2));
-        int minute=Integer.parseInt(time.substring(2,4));
+        String minute=time.substring(2,4);
         if (hour>12) {
             hour=hour-12;
             return hour + "." + minute + "pm";

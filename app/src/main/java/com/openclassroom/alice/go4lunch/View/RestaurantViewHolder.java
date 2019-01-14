@@ -1,5 +1,7 @@
 package com.openclassroom.alice.go4lunch.View;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +24,11 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.openclassroom.alice.go4lunch.Constantes.CLOSED;
+import static com.openclassroom.alice.go4lunch.Constantes.CLOSING_SOON;
+import static com.openclassroom.alice.go4lunch.Constantes.OPEN;
+import static com.openclassroom.alice.go4lunch.Constantes.OPEN_24_7;
+
 /**
  * Created by Alice on 08 January 2019.
  */
@@ -38,11 +45,12 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.fragment_main_item_star_3) ImageView mStarImg3;
     @BindView(R.id.fragment_main_item_image) ImageView mProfileImg;
 
-    Disposable mDisposable;
+    private Context mContext;
 
-    public RestaurantViewHolder(View itemView) {
+    public RestaurantViewHolder(View itemView, Context context) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        mContext =context;
     }
 
     public void updateWithRestaurants(Restaurant restaurant, RequestManager glide){
@@ -113,25 +121,45 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         final int currentHour = Calendar.getInstance().get(Calendar.HOUR)+12;
         final int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
         if (restaurant.getOpeningHours()!=null) {
-            this.mDisposable = PlacesAPIStreams.streamFetchDetailPlace(restaurant.getPlaceId()).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
+            Disposable disposable = PlacesAPIStreams.streamFetchDetailPlace(restaurant.getPlaceId()).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
                 @Override
                 public void onNext(PlaceDetailResult placeDetailResult) {
-                    if (placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute).equals("Closing Soon")) {
+                    if (placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute) == CLOSING_SOON) {
                         mScheduleTxt.setTextColor(Color.RED);
                     } else {
                         mScheduleTxt.setTextColor(Color.BLACK);
                     }
-                    mScheduleTxt.setText(placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute));
+                    String temp;
+                    switch (placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute)) {
+                        case OPEN_24_7:
+                            temp = mContext.getResources().getString(R.string.open24_7);
+                            break;
+                        case OPEN:
+                            temp = mContext.getResources().getString(R.string.open) + placeDetailResult.getResult().getOpeningHours().getHourWithFormat(placeDetailResult.getResult().getOpeningHours().getClosingHour(currentDayOfWeek, currentHour));
+                            break;
+                        case CLOSING_SOON:
+                            temp = mContext.getResources().getString(R.string.closing_soon);
+                            break;
+                        case CLOSED:
+                            temp = mContext.getResources().getString(R.string.closed);
+                            break;
+                        default:
+                            temp = mContext.getResources().getString(R.string.no_hour_information);
+                            break;
+                    }
+                    mScheduleTxt.setText(temp);
                 }
 
                 @Override
-                public void onError(Throwable e) { }
+                public void onError(Throwable e) {
+                }
 
                 @Override
-                public void onComplete() { }
+                public void onComplete() {
+                }
             });
         } else {
-            mScheduleTxt.setText("No information");
+            mScheduleTxt.setText(mContext.getResources().getString(R.string.no_hour_information));
         }
     }
 }

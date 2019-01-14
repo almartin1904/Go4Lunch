@@ -33,10 +33,9 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.fragment_restaurant_item, parent, false);
 
-        return new RestaurantViewHolder(view);
+        return new RestaurantViewHolder(view, context);
     }
 
-    // UPDATE VIEW HOLDER WITH A GITHUBUSER
     @Override
     public void onBindViewHolder(RestaurantViewHolder viewHolder, int position) {
         viewHolder.updateWithRestaurants(this.mRestaurants.get(position), mGlide);
