@@ -146,8 +146,10 @@ public class RestaurantCardActivity extends BaseActivity {
         if (this.getCurrentUser() != null) {
             if (isMyLunch) {
                 WorkmateHelper.updateRestaurantID(this.getCurrentUser().getUid(), this.mPlaceId).addOnFailureListener(this.onFailureListener());
+                WorkmateHelper.updateNameOfRestaurant(this.getCurrentUser().getUid(), this.nameTxt.getText().toString()).addOnFailureListener(this.onFailureListener());
             } else {
                 WorkmateHelper.updateRestaurantID(this.getCurrentUser().getUid(), "").addOnFailureListener(this.onFailureListener());
+                WorkmateHelper.updateNameOfRestaurant(this.getCurrentUser().getUid(), "").addOnFailureListener(this.onFailureListener());
             }
         }
     }

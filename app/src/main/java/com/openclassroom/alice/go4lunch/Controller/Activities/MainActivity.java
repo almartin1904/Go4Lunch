@@ -74,7 +74,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getCurrentUser()==null){
+        if (isCurrentUserLogged()){
             this.startSignInActivity();
         }
 
@@ -205,9 +205,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Workmate currentWorkmate = documentSnapshot.toObject(Workmate.class);
                         String placeId = TextUtils.isEmpty(currentWorkmate.getRestaurantPlaceId()) ? "" : currentWorkmate.getRestaurantPlaceId();
-                        Intent restaurantCardActivity = new Intent(MainActivity.this, RestaurantCardActivity.class);
-                        restaurantCardActivity.putExtra(CARD_DETAILS, placeId);
-                        startActivity(restaurantCardActivity);
+                        if (placeId.equals("")) {
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_restaurant_picked_navdrawer), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent restaurantCardActivity = new Intent(MainActivity.this, RestaurantCardActivity.class);
+                            restaurantCardActivity.putExtra(CARD_DETAILS, placeId);
+                            startActivity(restaurantCardActivity);
+                        }
+
                     }
                 });
 

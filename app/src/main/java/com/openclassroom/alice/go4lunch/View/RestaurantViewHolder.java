@@ -63,7 +63,9 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
     private void setPhoto(Restaurant restaurant, RequestManager glide) {
         if (restaurant.getPhotos()!=null) {
-            glide.load(getPhotoURL(restaurant.getPhotos().get(0).getPhotoReference())).apply(RequestOptions.centerCropTransform()).into(mProfileImg);
+            glide.load(getPhotoURL(restaurant.getPhotos().get(0).getPhotoReference()))
+                    .apply(RequestOptions.centerCropTransform())
+                    .into(mProfileImg);
         }
     }
 

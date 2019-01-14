@@ -10,6 +10,7 @@ public class Workmate {
     private String name;
     private String mail;
     private String restaurantPlaceId;
+    private String nameOfRestaurant;
     @Nullable private String urlPicture;
 
     public Workmate() { }
@@ -20,6 +21,7 @@ public class Workmate {
         this.mail = mail;
         this.urlPicture = urlPicture;
         this.restaurantPlaceId="";
+        this.nameOfRestaurant="";
     }
 
     public String getUid() {
@@ -32,6 +34,10 @@ public class Workmate {
 
     public String getName() {
         return name;
+    }
+
+    public String getFirstName() {
+        return name.substring(0, name.indexOf(' '));
     }
 
     public void setName(String name) {
@@ -61,5 +67,13 @@ public class Workmate {
 
     public void setUrlPicture(@Nullable String urlPicture) {
         this.urlPicture = urlPicture;
+    }
+
+    public String getNameOfRestaurant() {
+        return nameOfRestaurant;
+    }
+
+    public void setNameOfRestaurant(String nameOfRestaurant) {
+        this.nameOfRestaurant = nameOfRestaurant;
     }
 }

@@ -22,6 +22,7 @@
     <string name="navigation_drawer_logout">Log out</string>
     <string name="info_no_email_found">No email address</string>
     <string name="info_no_username_found">Unknown</string>
+    <string name="no_restaurant_picked_navdrawer">No restaurant picked yet!</string>
 
     <!-- Tab Layout-->
     <string name="tablayout_maps">Maps View</string>
@@ -51,5 +52,9 @@
     <!-- Your Lunch -->
     <string name="your_lunch_dialog_title">Today\'s lunch</string>
     <string name="your_lunch_dialog_message">You are eating at </string>
+
+    <!-- Workmates view holder -->
+    <string name="no_restaurant_picked">\u0020hasn\'t decided yet</string>
+    <string name="restaurant_picked">\u0020is eating at\u0020</string>
 
 </resources>
