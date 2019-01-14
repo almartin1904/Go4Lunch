@@ -52,7 +52,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
             this.mAddressTxt.setText(restaurant.getAddress());
 
             setOpeningHour(restaurant);
-            setDistance("place_id:"+restaurant.getPlaceId());
+            setDistance(restaurant);
             setPhoto(restaurant, glide);
             setStars(restaurant);
         } catch (Exception e){
@@ -87,20 +87,25 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoReference + "&key=AIzaSyB0bbKRXlGkEbvEFjxXyACgyAJrZLGS42w";
     }
 
-    private void setDistance(String placeID){
-        this.mDisposable = PlacesAPIStreams.streamFetchDistance(placeID).subscribeWith(new DisposableObserver<DistanceResult>() {
-            @Override
-            public void onNext(DistanceResult distanceResult) {
-                mDistanceTxt.setText(distanceResult.getRows().get(0).getElements().get(0).getDistance().getText());
-            }
+    private String computeDistance(double deviceLat, double restaurantLat, double deviceLng, double restaurantLng) {
 
-            @Override
-            public void onError(Throwable e) { }
+        final int R = 6371; // Radius of earth
+        double latDistance = Math.toRadians(restaurantLat - deviceLat);
+        double lonDistance = Math.toRadians(restaurantLng - deviceLng);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(deviceLat)) * Math.cos(Math.toRadians(restaurantLat))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
 
-            @Override
-            public void onComplete() { }
-        });
+        double height = 0.0 - 0.0;
+        distance = Math.pow(distance, 2) + Math.pow(height, 2);
+        //Rounded
+        return Math.round(Math.sqrt(distance)) + "m";
+    }
 
+    private void setDistance(Restaurant restaurant){
+        mDistanceTxt.setText(computeDistance(50.633258, restaurant.getGeometry().getLocation().getLat(), 3.020537, restaurant.getGeometry().getLocation().getLng()));
     }
 
     private void setOpeningHour(Restaurant restaurant){
