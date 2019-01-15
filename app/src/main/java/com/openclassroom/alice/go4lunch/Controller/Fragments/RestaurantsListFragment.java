@@ -130,6 +130,8 @@ public class RestaurantsListFragment extends Fragment {
     }
 
 
+
+
     // -------------------
     // UPDATE UI
     // -------------------

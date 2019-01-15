@@ -10,13 +10,19 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.openclassroom.alice.go4lunch.BuildConfig;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
+import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 
 import java.util.Calendar;
+
+import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,8 +49,11 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.fragment_restaurant_item_star_2) ImageView mStarImg2;
     @BindView(R.id.fragment_restaurant_item_star_3) ImageView mStarImg3;
     @BindView(R.id.fragment_restaurant_item_image) ImageView mProfileImg;
+    @BindView(R.id.fragment_restaurant_item_workmates_img) ImageView mNbOfWorkmatesImg;
+    @BindView(R.id.fragment_restaurant_item_workmates_txt) TextView mNbOfWorkmatesTxt;
 
     private Context mContext;
+    private Disposable mDisposable;
 
     public RestaurantViewHolder(View itemView, Context context) {
         super(itemView);
@@ -62,9 +71,32 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
             setDistance(restaurant);
             setPhoto(restaurant, glide);
             setStars(restaurant);
+            setNumberOfWorkmatesJoining(restaurant.getPlaceId(), restaurant.getName());
+
         } catch (Exception e){
             Log.e(TAG, "updateWithRestaurants: " + restaurant.getName() + " : "+ e.getMessage());
         }
+    }
+
+    //-----------------------------------------------------------------
+    //Methods to import characteristics of a restaurant
+    //-----------------------------------------------------------------
+
+    private void setNumberOfWorkmatesJoining(String placeId, final String name) {
+        mNbOfWorkmatesImg.setVisibility(View.INVISIBLE);
+        mNbOfWorkmatesTxt.setVisibility(View.INVISIBLE);
+        WorkmateHelper.getWorkmatesGoingToARestaurant(placeId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (queryDocumentSnapshots != null) {
+                    Log.d(TAG, "onEvent: "+ name + " " +queryDocumentSnapshots.getDocuments().size());
+                    mNbOfWorkmatesImg.setVisibility(View.VISIBLE);
+                    mNbOfWorkmatesTxt.setVisibility(View.VISIBLE);
+                    String temp="("+ queryDocumentSnapshots.getDocuments().size() +")";
+                    mNbOfWorkmatesTxt.setText(temp);
+                }
+            }
+        });
 
     }
 
@@ -120,7 +152,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         final int currentHour = Calendar.getInstance().get(Calendar.HOUR)+12;
         final int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
         if (restaurant.getOpeningHours()!=null) {
-            Disposable disposable = PlacesAPIStreams.streamFetchDetailPlace(restaurant.getPlaceId()).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
+            mDisposable = PlacesAPIStreams.streamFetchDetailPlace(restaurant.getPlaceId()).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
                 @Override
                 public void onNext(PlaceDetailResult placeDetailResult) {
                     if (placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute) == CLOSING_SOON) {

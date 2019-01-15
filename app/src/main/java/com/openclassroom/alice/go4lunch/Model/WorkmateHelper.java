@@ -7,6 +7,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 /**
@@ -48,7 +49,6 @@ private static final String DATA_RESTAURANT_NAME = "nameOfRestaurant";
     }
 
     public static Query getWorkmatesGoingToARestaurant(String placeId){
-        Log.d(TAG, "getAllWorkMates: ");
         return WorkmateHelper.getUsersCollection()
                 .whereEqualTo(DATA_PLACE_ID_RESTAURANT, placeId)
                 .limit(10);

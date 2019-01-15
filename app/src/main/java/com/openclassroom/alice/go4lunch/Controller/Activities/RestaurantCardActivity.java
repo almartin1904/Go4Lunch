@@ -47,11 +47,12 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
     private static final String TAG = RestaurantCardActivity.class.getSimpleName();
     private String mPlaceId;
     private WorkmateAdapter mWorkmateAdapter;
+    private Disposable mDisposable;
 
-    @BindView(R.id.restaurant_name_txt) TextView nameTxt;
-    @BindView(R.id.restaurant_address_txt) TextView addressTxt;
-    @BindView(R.id.restaurant_imageView) ImageView photoImg;
-    @BindView(R.id.check_btn) FloatingActionButton checkBtn;
+    @BindView(R.id.activity_restaurant_card_restaurant_name_txt) TextView nameTxt;
+    @BindView(R.id.activity_restaurant_card_restaurant_address_txt) TextView addressTxt;
+    @BindView(R.id.activity_restaurant_card_imageView) ImageView photoImg;
+    @BindView(R.id.activity_restaurant_card_check_btn) FloatingActionButton checkBtn;
     @BindView(R.id.activity_restaurant_card_recyclerview) RecyclerView mRecyclerView;
 
     @Override
@@ -65,6 +66,21 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
         this.updateUiWhenCreating();
         this.configureRecyclerView();
     }
+
+    @Override
+    public int getFragmentLayout() {
+        return R.layout.activity_restaurant_card;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.disposeWhenDestroy();
+    }
+
+    //----------------
+    // Configuration
+    //----------------
 
     private void configureRecyclerView() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -93,6 +109,10 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
                 .build();
     }
 
+    //--------------------------------
+    // UI
+    //--------------------------------
+
     private void updateUiWhenCreating() {
         WorkmateHelper.getUser(Objects.requireNonNull(this.getCurrentUser()).getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -108,12 +128,20 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
     }
 
     @Override
-    public int getFragmentLayout() {
-        return R.layout.activity_restaurant_card;
+    public void onDataChanged() {
+        if (mWorkmateAdapter.getItemCount()==0){
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
+    //-------------------------------
+    // HTTP REQUEST
+    //-------------------------------
+
     private void executeHttpRequest(String placeId) {
-        Disposable disposable = PlacesAPIStreams.streamFetchDetailPlace(placeId).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
+        mDisposable = PlacesAPIStreams.streamFetchDetailPlace(placeId).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
             @Override
             public void onNext(PlaceDetailResult placeDetailResult) {
                 nameTxt.setText(placeDetailResult.getResult().getName());
@@ -141,10 +169,18 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
         });
     }
 
-    @OnClick({R.id.call_btn, R.id.like_btn, R.id.website_btn, R.id.check_btn})
+    private void disposeWhenDestroy(){
+        if (this.mDisposable != null && !this.mDisposable.isDisposed()) this.mDisposable.dispose();
+    }
+
+    //-----------------------------
+    // Actions
+    //-----------------------------
+
+    @OnClick({R.id.activity_restaurant_card_call_btn, R.id.activity_restaurant_card_like_btn, R.id.activity_restaurant_card_website_btn, R.id.activity_restaurant_card_check_btn})
     public void onClick(View view){
         switch(view.getId()){
-            case R.id.call_btn:
+            case R.id.activity_restaurant_card_call_btn:
                 if (mPhoneNumber!=null){
                     Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+mPhoneNumber));
                     //callIntent.setData(Uri.parse("tel:"+mPhoneNumber));
@@ -153,9 +189,9 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
                     Toast.makeText(getApplicationContext(), "No phone number", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.like_btn:
+            case R.id.activity_restaurant_card_like_btn:
                 break;
-            case R.id.website_btn:
+            case R.id.activity_restaurant_card_website_btn:
                 if (mWebsite!=null){
                     if (!mWebsite.startsWith("http://") && !mWebsite.startsWith("https://"))
                         mWebsite = "http://" + mWebsite;
@@ -165,7 +201,7 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
                     Toast.makeText(getApplicationContext(), "No website", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.check_btn:
+            case R.id.activity_restaurant_card_check_btn:
                 if (isMyLunch){
                     isMyLunch=false;
                     checkBtn.setImageResource(R.drawable.check_circle_black_24x24);
@@ -190,12 +226,5 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
         }
     }
 
-    @Override
-    public void onDataChanged() {
-        if (mWorkmateAdapter.getItemCount()==0){
-            mRecyclerView.setVisibility(View.GONE);
-        } else {
-            mRecyclerView.setVisibility(View.VISIBLE);
-        }
-    }
+
 }
