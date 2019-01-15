@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 import com.openclassroom.alice.go4lunch.View.WorkmateAdapter;
 
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -44,6 +46,7 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
     private String mWebsite;
     private String mPhoneNumber;
     private boolean isMyLunch=false;
+    private boolean isLiked=false;
     private static final String TAG = RestaurantCardActivity.class.getSimpleName();
     private String mPlaceId;
     private WorkmateAdapter mWorkmateAdapter;
@@ -54,6 +57,7 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
     @BindView(R.id.activity_restaurant_card_imageView) ImageView photoImg;
     @BindView(R.id.activity_restaurant_card_check_btn) FloatingActionButton checkBtn;
     @BindView(R.id.activity_restaurant_card_recyclerview) RecyclerView mRecyclerView;
+    @BindView(R.id.activity_restaurant_card_like_btn) Button mLikeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +127,11 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
                     isMyLunch=true;
                     checkBtn.setImageResource(R.drawable.check_coloraccent);
                 }
+                List<String> likedPlaceId = currentUser.getRestaurantLikedPlaceId();
+                if (likedPlaceId.contains(mPlaceId)){
+                    isLiked=true;
+                    mLikeBtn.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.grade_colorprimary), null, null);
+                }
             }
         });
     }
@@ -190,6 +199,13 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
                 }
                 break;
             case R.id.activity_restaurant_card_like_btn:
+                if (isLiked){
+                    mLikeBtn.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.grade_black_24x24), null, null);
+                } else {
+                    mLikeBtn.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.grade_colorprimary), null, null);
+                }
+                isLiked=!isLiked;
+                updateLikedRestaurant(isLiked);
                 break;
             case R.id.activity_restaurant_card_website_btn:
                 if (mWebsite!=null){
@@ -212,6 +228,22 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
                 updateCheckedRestaurant(isMyLunch);
                 break;
         }
+    }
+
+    private void updateLikedRestaurant(final boolean isLiked) {
+        WorkmateHelper.getUser(Objects.requireNonNull(this.getCurrentUser()).getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Workmate currentUser = documentSnapshot.toObject(Workmate.class);
+                List<String> likedPlaceId = currentUser.getRestaurantLikedPlaceId();
+                if (isLiked){
+                    likedPlaceId.add(mPlaceId);
+                } else {
+                    likedPlaceId.remove(mPlaceId);
+                }
+                WorkmateHelper.updateRestaurantLiked(getCurrentUser().getUid(), likedPlaceId).addOnFailureListener(onFailureListener());
+            }
+        });
     }
 
     private void updateCheckedRestaurant(boolean isMyLunch){

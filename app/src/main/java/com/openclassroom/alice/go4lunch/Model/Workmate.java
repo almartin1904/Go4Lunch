@@ -2,78 +2,91 @@ package com.openclassroom.alice.go4lunch.Model;
 
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Alice on 12 January 2019.
  */
 public class Workmate {
-    private String uid;
-    private String name;
-    private String mail;
-    private String restaurantPlaceId;
-    private String nameOfRestaurant;
-    @Nullable private String urlPicture;
+    private String mUid;
+    private String mName;
+    private String mMail;
+    private String mRestaurantPlaceId;
+    private String mNameOfRestaurant;
+    private List<String> mRestaurantLikedPlaceId;
+    @Nullable private String mUrlPicture;
 
     public Workmate() { }
 
     public Workmate(String uid, String name, String mail, @Nullable String urlPicture) {
-        this.uid = uid;
-        this.name = name;
-        this.mail = mail;
-        this.urlPicture = urlPicture;
-        this.restaurantPlaceId="";
-        this.nameOfRestaurant="";
+        this.mUid = uid;
+        this.mName = name;
+        this.mMail = mail;
+        this.mUrlPicture = urlPicture;
+        this.mRestaurantPlaceId="";
+        this.mNameOfRestaurant="";
+        this.mRestaurantLikedPlaceId=new ArrayList<>();
     }
 
     public String getUid() {
-        return uid;
+        return mUid;
     }
 
     public void setUid(String uid) {
-        this.uid = uid;
+        this.mUid = uid;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
     public String getFirstName() {
-        return name.substring(0, name.indexOf(' '));
+        return mName.substring(0, mName.indexOf(' '));
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.mName = name;
     }
 
     public String getMail() {
-        return mail;
+        return mMail;
     }
 
     public void setMail(String mail) {
-        this.mail = mail;
+        this.mMail = mail;
     }
 
     public String getRestaurantPlaceId() {
-        return restaurantPlaceId;
+        return mRestaurantPlaceId;
     }
 
     public void setRestaurantPlaceId(String restaurantPlaceId) {
-        this.restaurantPlaceId = restaurantPlaceId;
+        this.mRestaurantPlaceId = restaurantPlaceId;
     }
 
     @Nullable
     public String getUrlPicture() {
-        return urlPicture;
+        return mUrlPicture;
     }
 
     public void setUrlPicture(@Nullable String urlPicture) {
-        this.urlPicture = urlPicture;
+        this.mUrlPicture = urlPicture;
     }
 
     public String getNameOfRestaurant() {
-        return nameOfRestaurant;
+        return mNameOfRestaurant;
     }
 
     public void setNameOfRestaurant(String nameOfRestaurant) {
-        this.nameOfRestaurant = nameOfRestaurant;
+        this.mNameOfRestaurant = nameOfRestaurant;
+    }
+
+    public List<String> getRestaurantLikedPlaceId() {
+        return mRestaurantLikedPlaceId;
+    }
+
+    public void setRestaurantLikedPlaceId(List<String> restaurantLikedPlaceId) {
+        mRestaurantLikedPlaceId = restaurantLikedPlaceId;
     }
 }

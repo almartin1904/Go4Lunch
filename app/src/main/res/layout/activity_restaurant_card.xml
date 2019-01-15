@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:background="@android:color/white"
-            android:drawableTop="@drawable/grade_colorprimary"
+            android:drawableTop="@drawable/grade_black_24x24"
             android:text="@string/like"
             android:textColor="@color/colorPrimary" />
 
