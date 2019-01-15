@@ -3,6 +3,7 @@ package com.openclassroom.alice.go4lunch.View;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,17 +11,23 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.openclassroom.alice.go4lunch.BuildConfig;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
+import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -51,6 +58,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.fragment_restaurant_item_image) ImageView mProfileImg;
     @BindView(R.id.fragment_restaurant_item_workmates_img) ImageView mNbOfWorkmatesImg;
     @BindView(R.id.fragment_restaurant_item_workmates_txt) TextView mNbOfWorkmatesTxt;
+    @BindView(R.id.fragment_restaurant_gold_star) ImageView mGoldStarImg;
 
     private Context mContext;
     private Disposable mDisposable;
@@ -67,6 +75,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
             this.mNameTxt.setText(restaurant.getName());
             this.mAddressTxt.setText(restaurant.getAddress());
 
+            setGoldStar(restaurant.getPlaceId());
             setOpeningHour(restaurant);
             setDistance(restaurant);
             setPhoto(restaurant, glide);
@@ -81,6 +90,22 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     //-----------------------------------------------------------------
     //Methods to import characteristics of a restaurant
     //-----------------------------------------------------------------
+
+    private void setGoldStar(final String placeId) {
+
+        WorkmateHelper.getUser(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid())).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Workmate currentUser = documentSnapshot.toObject(Workmate.class);
+                List<String> likedRestaurant = currentUser != null ? currentUser.getRestaurantLikedPlaceId() : null;
+                if (likedRestaurant!=null && likedRestaurant.contains(placeId)){
+                    mGoldStarImg.setVisibility(View.VISIBLE);
+                } else {
+                    mGoldStarImg.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
 
     private void setNumberOfWorkmatesJoining(String placeId, final String name) {
         mNbOfWorkmatesImg.setVisibility(View.INVISIBLE);

@@ -8,16 +8,28 @@
     android:layout_height="wrap_content"
     android:padding="10dip">
 
+    <ImageView
+        android:id="@+id/fragment_restaurant_gold_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="6dp"
+        android:contentDescription="@string/stars"
+        android:src="@drawable/gold_star"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/fragment_restaurant_item_name"
         android:layout_width="220dp"
-        android:layout_height="wrap_content"
+        android:layout_height="16dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
         android:textStyle="bold"
-        tools:text="Le zinc"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_restaurant_gold_star"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Le zinc" />
 
     <TextView
         android:id="@+id/fragment_restaurant_item_address"
