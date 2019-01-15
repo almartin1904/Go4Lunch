@@ -21,7 +21,7 @@ import java.util.Objects;
  */
 public class WorkmateHelper {
 
-    private static final String COLLECTION_NAME = "users";
+    public static final String COLLECTION_NAME = "users";
     private static final String DATA_USERNAME = "username";
     private static final String DATA_PLACE_ID_RESTAURANT = "restaurantPlaceId";
     private static final String DATA_RESTAURANT_NAME = "nameOfRestaurant";

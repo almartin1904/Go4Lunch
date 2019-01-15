@@ -1,5 +1,8 @@
 package com.openclassroom.alice.go4lunch.Controller.Activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -27,12 +30,14 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.openclassroom.alice.go4lunch.Controller.ResetAtMidnightReceiver;
 import com.openclassroom.alice.go4lunch.Model.ViewPagerAdapter;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -73,7 +78,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         this.configureDrawerLayout();
         this.configureNavigationView();
         this.configureViewPagerAndTabs();
-
+        this.configureResetRestaurantAtMidnight();
     }
 
     @Override
@@ -264,6 +269,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(tabIcons[0]);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(tabIcons[1]);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
+    }
+
+    private void configureResetRestaurantAtMidnight() {
+        Calendar midnightCalendar = Calendar.getInstance();
+        midnightCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        midnightCalendar.set(Calendar.MINUTE, 0);
+        midnightCalendar.set(Calendar.SECOND, 0);
+        boolean alarmUp = (PendingIntent.getBroadcast(MainActivity.this, 0,
+                new Intent(MainActivity.this, ResetAtMidnightReceiver.class),
+                PendingIntent.FLAG_NO_CREATE) != null);
+        if (!alarmUp) {
+            AlarmManager alarmManager= (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(MainActivity.this, ResetAtMidnightReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, midnightCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
     }
 
     // --------------------
