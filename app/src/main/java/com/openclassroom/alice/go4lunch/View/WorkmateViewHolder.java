@@ -1,11 +1,8 @@
 package com.openclassroom.alice.go4lunch.View;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +25,6 @@ public class WorkmateViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.fragment_workmate_item_picture) ImageView mProfilePicture;
     @BindView(R.id.fragment_workmate_item_txt) TextView mRestaurantTxt;
-    private static final String TAG = WorkmateViewHolder.class.getSimpleName();
     private Context mContext;
 
     public WorkmateViewHolder(@NonNull View itemView, Context context) {

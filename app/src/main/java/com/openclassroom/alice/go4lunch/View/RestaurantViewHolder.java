@@ -1,7 +1,6 @@
 package com.openclassroom.alice.go4lunch.View;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassroom.alice.go4lunch.BuildConfig;
-import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.DistanceResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
 import com.openclassroom.alice.go4lunch.R;
@@ -37,14 +35,14 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
     private static final String TAG = RestaurantViewHolder.class.getSimpleName();
 
-    @BindView(R.id.fragment_main_item_name) TextView mNameTxt;
-    @BindView(R.id.fragment_main_item_address) TextView mAddressTxt;
-    @BindView(R.id.fragment_main_item_schedule) TextView mScheduleTxt;
-    @BindView(R.id.fragment_main_item_distance) TextView mDistanceTxt;
-    @BindView(R.id.fragment_main_item_star_1) ImageView mStarImg1;
-    @BindView(R.id.fragment_main_item_star_2) ImageView mStarImg2;
-    @BindView(R.id.fragment_main_item_star_3) ImageView mStarImg3;
-    @BindView(R.id.fragment_main_item_image) ImageView mProfileImg;
+    @BindView(R.id.fragment_restaurant_item_name) TextView mNameTxt;
+    @BindView(R.id.fragment_restaurant_item_address) TextView mAddressTxt;
+    @BindView(R.id.fragment_restaurant_item_schedule) TextView mScheduleTxt;
+    @BindView(R.id.fragment_restaurant_item_distance) TextView mDistanceTxt;
+    @BindView(R.id.fragment_restaurant_item_star_1) ImageView mStarImg1;
+    @BindView(R.id.fragment_restaurant_item_star_2) ImageView mStarImg2;
+    @BindView(R.id.fragment_restaurant_item_star_3) ImageView mStarImg3;
+    @BindView(R.id.fragment_restaurant_item_image) ImageView mProfileImg;
 
     private Context mContext;
 

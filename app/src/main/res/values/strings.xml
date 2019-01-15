@@ -43,6 +43,7 @@
     <string name="call">Call</string>
     <string name="like">Like</string>
     <string name="website">Website</string>
+    <string name="restaurant_picture_description">restaurant picture</string>
 
     <!-- Settings -->
     <string name="profile">Your Profile</string>
@@ -52,6 +53,7 @@
     <string name="popup_message_choice_yes">Yes !</string>
     <string name="popup_message_choice_no">No</string>
     <string name="email_address">Email : </string>
+    <string name="profile_image_description">profile picture</string>
 
     <!-- Your Lunch -->
     <string name="your_lunch_dialog_title">Today\'s lunch</string>
@@ -61,5 +63,9 @@
     <string name="no_restaurant_picked">\u0020hasn\'t decided yet</string>
     <string name="restaurant_picked">\u0020is eating at\u0020</string>
     <string name="joining">\u0020is joining</string>
+
+    <!-- Restaurant item -->
+    <string name="number_of_person">number of person</string>
+    <string name="stars">rating stars</string>
 
 </resources>

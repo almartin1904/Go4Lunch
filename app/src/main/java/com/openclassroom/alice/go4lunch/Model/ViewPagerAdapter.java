@@ -1,7 +1,6 @@
 package com.openclassroom.alice.go4lunch.Model;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,12 +15,12 @@ import com.openclassroom.alice.go4lunch.R;
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    Context mContext;
+    private Context mContext;
 
     //Default Constructor
     public ViewPagerAdapter(FragmentManager mgr, Context context) {
         super(mgr);
-        mContext = context;
+        this.mContext = context;
     }
 
     @Override

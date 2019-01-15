@@ -51,7 +51,7 @@ public class SettingsActivity extends BaseActivity {
         return R.layout.activity_settings;
     }
 
-    @OnClick(R.id.delete_account_btn)
+    @OnClick(R.id.activity_settings_delete_account_btn)
     public void onClickDeleteButton() {
         new AlertDialog.Builder(this)
                 .setMessage(R.string.popup_message_confirmation_delete_account)

@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  */
 public class RestaurantsListFragmentTest {
     @Test
-    public void fetchArticleTopStories() throws Exception {
+    public void TestClosingHour() throws Exception {
         Observable<PlaceDetailResult> observableDetail = PlacesAPIStreams.streamFetchDetailPlace("ChIJK2CVUV7VwkcRedYLyCXbmhs");
         TestObserver<PlaceDetailResult> testObserver = new TestObserver<>();
         observableDetail.subscribeWith(testObserver)

@@ -2,7 +2,6 @@ package com.openclassroom.alice.go4lunch.View;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -48,8 +47,9 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<Workmate, Workmate
         holder.updateWithWorkmate(model, this.glide, mOrigin);
     }
 
+    @NonNull
     @Override
-    public WorkmateViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WorkmateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder: ");
         return new WorkmateViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_workmate_item, parent, false), mContext);

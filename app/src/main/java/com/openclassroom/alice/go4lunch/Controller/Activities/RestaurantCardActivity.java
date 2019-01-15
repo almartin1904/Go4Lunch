@@ -3,20 +3,17 @@ package com.openclassroom.alice.go4lunch.Controller.Activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.openclassroom.alice.go4lunch.BuildConfig;
-import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.DistanceResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
@@ -32,20 +28,19 @@ import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 import com.openclassroom.alice.go4lunch.View.WorkmateAdapter;
 
+import java.util.Objects;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.openclassroom.alice.go4lunch.Constantes.ACTIVITY_RESTAURANT_CARD;
 import static com.openclassroom.alice.go4lunch.Constantes.CARD_DETAILS;
-import static java.security.AccessController.getContext;
 
 
 public class RestaurantCardActivity extends BaseActivity implements WorkmateAdapter.Listener{
 
-    private Disposable mDisposable;
     private String mWebsite;
     private String mPhoneNumber;
     private boolean isMyLunch=false;
@@ -99,7 +94,7 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
     }
 
     private void updateUiWhenCreating() {
-        WorkmateHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        WorkmateHelper.getUser(Objects.requireNonNull(this.getCurrentUser()).getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Workmate currentUser = documentSnapshot.toObject(Workmate.class);
@@ -118,29 +113,31 @@ public class RestaurantCardActivity extends BaseActivity implements WorkmateAdap
     }
 
     private void executeHttpRequest(String placeId) {
-        this.mDisposable = PlacesAPIStreams.streamFetchDetailPlace(placeId).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
+        Disposable disposable = PlacesAPIStreams.streamFetchDetailPlace(placeId).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
             @Override
             public void onNext(PlaceDetailResult placeDetailResult) {
                 nameTxt.setText(placeDetailResult.getResult().getName());
                 addressTxt.setText(placeDetailResult.getResult().getFormatted_address());
-                mWebsite=placeDetailResult.getResult().getWebsite();
-                mPhoneNumber=placeDetailResult.getResult().getFormattedPhoneNumber();
+                mWebsite = placeDetailResult.getResult().getWebsite();
+                mPhoneNumber = placeDetailResult.getResult().getFormattedPhoneNumber();
 
                 try {
                     Glide.with(getApplicationContext())
-                            .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ placeDetailResult.getResult().getPhotos().get(0).getPhotoReference()+ "&key="+BuildConfig.GOOGLE_API_KEY)
+                            .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + placeDetailResult.getResult().getPhotos().get(0).getPhotoReference() + "&key=" + BuildConfig.GOOGLE_API_KEY)
                             .apply(RequestOptions.centerCropTransform())
                             .into(photoImg);
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.e(TAG, "onNext: ", e);
                 }
             }
 
             @Override
-            public void onError(Throwable e) { }
+            public void onError(Throwable e) {
+            }
 
             @Override
-            public void onComplete() { }
+            public void onComplete() {
+            }
         });
     }
 

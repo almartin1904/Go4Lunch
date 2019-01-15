@@ -1,6 +1,7 @@
 package com.openclassroom.alice.go4lunch.View;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +27,9 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
         mGlide=glide;
     }
 
+    @NonNull
     @Override
-    public RestaurantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RestaurantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // CREATE VIEW HOLDER AND INFLATING ITS XML LAYOUT
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -37,7 +39,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     }
 
     @Override
-    public void onBindViewHolder(RestaurantViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RestaurantViewHolder viewHolder, int position) {
         viewHolder.updateWithRestaurants(this.mRestaurants.get(position), mGlide);
     }
 

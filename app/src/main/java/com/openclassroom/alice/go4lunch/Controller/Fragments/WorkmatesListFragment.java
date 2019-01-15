@@ -2,11 +2,10 @@ package com.openclassroom.alice.go4lunch.Controller.Fragments;
 
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,11 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.openclassroom.alice.go4lunch.Controller.Activities.MainActivity;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
 import com.openclassroom.alice.go4lunch.View.WorkmateAdapter;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +32,6 @@ public class WorkmatesListFragment extends Fragment implements WorkmateAdapter.L
     @BindView(R.id.fragment_workmates_recyclerview) RecyclerView mRecyclerView;
 
     private WorkmateAdapter mWorkmateAdapter;
-    private static final String TAG = WorkmatesListFragment.class.getSimpleName();
 
     public WorkmatesListFragment() {
         // Required empty public constructor
@@ -48,7 +42,7 @@ public class WorkmatesListFragment extends Fragment implements WorkmateAdapter.L
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workmates_list, container, false);

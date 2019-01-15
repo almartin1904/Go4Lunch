@@ -30,7 +30,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/ic_anon_user_48dp" />
+        app:srcCompat="@drawable/ic_anon_user_48dp"
+        android:contentDescription="@string/profile_image_description" />
 
     <TextView
         android:id="@+id/activity_settings_username_txt"
@@ -89,7 +90,7 @@
 
 
     <Button
-        android:id="@+id/delete_account_btn"
+        android:id="@+id/activity_settings_delete_account_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"

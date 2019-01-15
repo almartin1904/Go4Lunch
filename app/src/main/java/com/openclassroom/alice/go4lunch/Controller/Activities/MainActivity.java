@@ -1,6 +1,5 @@
 package com.openclassroom.alice.go4lunch.Controller.Activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,8 +10,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -28,35 +25,29 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.PlaceDetailResult;
 import com.openclassroom.alice.go4lunch.Model.ViewPagerAdapter;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
 import com.openclassroom.alice.go4lunch.R;
-import com.openclassroom.alice.go4lunch.Utils.PlacesAPIStreams;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 
 import static com.openclassroom.alice.go4lunch.Constantes.CARD_DETAILS;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     @BindView(R.id.main_activity_coordinator_layout) CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.activity_main_drawer_layout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.activity_main_nav_view) NavigationView mNavigationView;
+    @BindView(R.id.activity_main_toolbar) Toolbar mToolbar;
+
 
     private static final int RC_SIGN_IN = 123;
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private NavigationView mNavigationView;
     private TextView mTextViewMail;
     private TextView mTextViewName;
     private ImageView mImageViewProfile;
@@ -139,7 +130,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             } else { // ERRORS
                 if (response == null) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_authentication_canceled));
-                } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                } else if (Objects.requireNonNull(response.getError()).getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_no_internet));
                 } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_unknown_error));
@@ -171,7 +162,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     Workmate currentWorkmate = documentSnapshot.toObject(Workmate.class);
-                    String username = TextUtils.isEmpty(currentWorkmate.getName()) ? getString(R.string.info_no_username_found) : currentWorkmate.getName();
+                    String username = TextUtils.isEmpty(currentWorkmate != null ? currentWorkmate.getName() : null) ? getString(R.string.info_no_username_found) : currentWorkmate != null ? currentWorkmate.getName() : null;
                     Log.d(TAG, "onSuccess: "+username);
                     mTextViewName.setText(username);
                 }
@@ -193,19 +184,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     //-------------------
 
     @Override
-    public boolean onNavigationItemSelected(final MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
 
         // 4 - Handle Navigation Item Click
         int id = item.getItemId();
 
         switch (id){
             case R.id.activity_main_drawer_lunch :
-                WorkmateHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                WorkmateHelper.getUser(Objects.requireNonNull(this.getCurrentUser()).getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Workmate currentWorkmate = documentSnapshot.toObject(Workmate.class);
-                        String placeId = TextUtils.isEmpty(currentWorkmate.getRestaurantPlaceId()) ? "" : currentWorkmate.getRestaurantPlaceId();
-                        if (placeId.equals("")) {
+                        String placeId = TextUtils.isEmpty(currentWorkmate != null ? currentWorkmate.getRestaurantPlaceId() : null) ? "" : currentWorkmate != null ? currentWorkmate.getRestaurantPlaceId() : null;
+                        if (placeId != null && placeId.equals("")) {
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_restaurant_picked_navdrawer), Toast.LENGTH_SHORT).show();
                         } else {
                             Intent restaurantCardActivity = new Intent(MainActivity.this, RestaurantCardActivity.class);
@@ -228,7 +219,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
         }
 
-        this.drawerLayout.closeDrawer(GravityCompat.START);
+        this.mDrawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
     }
@@ -240,32 +231,29 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     // 1 - Configure Toolbar
     private void configureToolBar(){
-        this.toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
     }
 
     // 2 - Configure Drawer Layout
     private void configureDrawerLayout(){
-        this.drawerLayout = (DrawerLayout) findViewById(R.id.activity_main_drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
 
     // 3 - Configure NavigationView
     private void configureNavigationView(){
-        this.mNavigationView = (NavigationView) findViewById(R.id.activity_main_nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         View header=mNavigationView.getHeaderView(0);
-        this.mTextViewMail = (TextView) header.findViewById(R.id.nav_header_mail_txt);
-        this.mTextViewName = (TextView) header.findViewById(R.id.nav_header_name_txt);
-        this.mImageViewProfile = (ImageView) header.findViewById(R.id.nav_header_profile_img);
+        this.mTextViewMail = header.findViewById(R.id.nav_header_mail_txt);
+        this.mTextViewName = header.findViewById(R.id.nav_header_name_txt);
+        this.mImageViewProfile = header.findViewById(R.id.nav_header_profile_img);
     }
 
     private void configureViewPagerAndTabs(){
-        ViewPager pager = (ViewPager)findViewById(R.id.activity_main_viewpager);
+        ViewPager pager = findViewById(R.id.activity_main_viewpager);
         pager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), this));
-        TabLayout tabs= (TabLayout)findViewById(R.id.activity_main_tabs);
+        TabLayout tabs= findViewById(R.id.activity_main_tabs);
         tabs.setupWithViewPager(pager);
         tabs.setTabMode(TabLayout.MODE_FIXED);
         setupTabIcons(tabs);
@@ -273,9 +261,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void setupTabIcons(TabLayout tabLayout) {
-        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(tabIcons[0]);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(tabIcons[1]);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
     }
 
     // --------------------

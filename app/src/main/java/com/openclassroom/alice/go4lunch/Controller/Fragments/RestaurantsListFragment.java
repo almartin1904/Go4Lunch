@@ -3,18 +3,16 @@ package com.openclassroom.alice.go4lunch.Controller.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.openclassroom.alice.go4lunch.Controller.Activities.MainActivity;
 import com.openclassroom.alice.go4lunch.Controller.Activities.RestaurantCardActivity;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.RequestResult;
 import com.openclassroom.alice.go4lunch.Model.ResultOfRequest.Restaurant;
@@ -39,13 +37,12 @@ import static com.openclassroom.alice.go4lunch.Constantes.CARD_DETAILS;
 public class RestaurantsListFragment extends Fragment {
 
 
-    @BindView(R.id.fragment_main_recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.fragment_listview_swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.fragment_restaurant_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.fragment_restaurant_swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
     Disposable mDisposable;
     private List<Restaurant> mRestaurants;
     private RestaurantAdapter mAdapter;
-    private static final String TAG = RestaurantsListFragment.class.getSimpleName();
 
     public RestaurantsListFragment() {
         // Required empty public constructor
@@ -57,7 +54,7 @@ public class RestaurantsListFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_restaurants_list, container, false);
