@@ -35,14 +35,12 @@ public class OpeningHours {
     }
 
     public int getOpenNowString(int currentDayOfWeek, int currentHour, int currentMinute) {
-        int closingStatus;
         if (openNow){
             if (closingSoon(getClosingHour(currentDayOfWeek, currentHour), currentHour, currentMinute)){
                 return CLOSING_SOON;
             } else {
                 return OPEN;
             }
-            //"Open until "+ getHourWithFormat(getClosingHour(currentDayOfWeek, currentHour, currentMinute));
         } else {
             return CLOSED;
         }
@@ -53,7 +51,7 @@ public class OpeningHours {
         while (periods.get(i).getClose().getDay()<currentDayOfWeek){
             i=i+1;
         }
-        if (Integer.parseInt(periods.get(i).getClose().getTime().substring(0,2))<currentHour){
+        if (Integer.parseInt(periods.get(i).getClose().getTime().substring(0,2))<=currentHour){
             i=i+1;
         }
         return periods.get(i).getClose().getTime();

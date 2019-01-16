@@ -22,7 +22,7 @@ import java.util.Objects;
 public class WorkmateHelper {
 
     public static final String COLLECTION_NAME = "users";
-    private static final String DATA_USERNAME = "username";
+    public static final String DATA_USERNAME = "username";
     private static final String DATA_PLACE_ID_RESTAURANT = "restaurantPlaceId";
     private static final String DATA_RESTAURANT_NAME = "nameOfRestaurant";
     private static final String DATA_RESTAURANT_LIKED = "restaurantLikedPlaceId";

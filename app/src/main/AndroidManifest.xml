@@ -21,6 +21,12 @@
         </activity>
         <activity android:name=".Controller.Activities.RestaurantCardActivity" />
         <activity android:name=".Controller.Activities.SettingsActivity"></activity>
+        <receiver android:name=".Controller.ResetAndShowNotificationReceiver"
+            android:enabled="true"
+            android:exported="false"/>
+        <service
+            android:name=".Controller.NotificationIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>

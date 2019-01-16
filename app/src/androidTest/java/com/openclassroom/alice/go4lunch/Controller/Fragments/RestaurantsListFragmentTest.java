@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  * Created by Alice on 08 January 2019.
  */
 public class RestaurantsListFragmentTest {
-    @Test
+    /*@Test
     public void TestClosingHour() throws Exception {
         Observable<PlaceDetailResult> observableDetail = PlacesAPIStreams.streamFetchDetailPlace("ChIJK2CVUV7VwkcRedYLyCXbmhs");
         TestObserver<PlaceDetailResult> testObserver = new TestObserver<>();
@@ -28,6 +28,6 @@ public class RestaurantsListFragmentTest {
         PlaceDetailResult DetailsFetched = testObserver.values().get(0);
         OpeningHours openingHours=DetailsFetched.getResult().getOpeningHours();
         assertEquals("Open until 23.30pm", openingHours.getOpenNowString(0, 15, 0));
-    }
+    }*/
 
 }

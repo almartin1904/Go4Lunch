@@ -180,12 +180,8 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
             mDisposable = PlacesAPIStreams.streamFetchDetailPlace(restaurant.getPlaceId()).subscribeWith(new DisposableObserver<PlaceDetailResult>() {
                 @Override
                 public void onNext(PlaceDetailResult placeDetailResult) {
-                    if (placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute) == CLOSING_SOON) {
-                        mScheduleTxt.setTextColor(Color.RED);
-                    } else {
-                        mScheduleTxt.setTextColor(Color.BLACK);
-                    }
                     String temp;
+                    mScheduleTxt.setTextColor(Color.BLACK);
                     switch (placeDetailResult.getResult().getOpeningHours().getOpenNowString(currentDayOfWeek, currentHour, currentMinute)) {
                         case OPEN_24_7:
                             temp = mContext.getResources().getString(R.string.open24_7);
@@ -195,6 +191,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
                             break;
                         case CLOSING_SOON:
                             temp = mContext.getResources().getString(R.string.closing_soon);
+                            mScheduleTxt.setTextColor(Color.RED);
                             break;
                         case CLOSED:
                             temp = mContext.getResources().getString(R.string.closed);

@@ -37,7 +37,7 @@
     <string name="open">Open until\u0020</string>
     <string name="closing_soon">Closing soon</string>
     <string name="closed">Closed</string>
-    <string name="no_hour_information">Closed</string>
+    <string name="no_hour_information">No information</string>
 
     <!-- Restaurant Card -->
     <string name="call">Call</string>
@@ -68,4 +68,6 @@
     <string name="number_of_person">number of person</string>
     <string name="stars">rating stars</string>
 
+    <!--NotificationRestaurant-->
+    <string name="notification_title">It\'s time to lunch !</string>
 </resources>

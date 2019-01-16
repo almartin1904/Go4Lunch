@@ -30,7 +30,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.openclassroom.alice.go4lunch.Controller.ResetAtMidnightReceiver;
+import com.openclassroom.alice.go4lunch.Controller.ResetAndShowNotificationReceiver;
 import com.openclassroom.alice.go4lunch.Model.ViewPagerAdapter;
 import com.openclassroom.alice.go4lunch.Model.Workmate;
 import com.openclassroom.alice.go4lunch.Model.WorkmateHelper;
@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         this.configureDrawerLayout();
         this.configureNavigationView();
         this.configureViewPagerAndTabs();
-        this.configureResetRestaurantAtMidnight();
+        this.configureResetRestaurantAtMidday();
     }
 
     @Override
@@ -271,19 +271,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
     }
 
-    private void configureResetRestaurantAtMidnight() {
+    private void configureResetRestaurantAtMidday() {
         Calendar midnightCalendar = Calendar.getInstance();
-        midnightCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        midnightCalendar.set(Calendar.HOUR_OF_DAY, 12);
         midnightCalendar.set(Calendar.MINUTE, 0);
         midnightCalendar.set(Calendar.SECOND, 0);
-        boolean alarmUp = (PendingIntent.getBroadcast(MainActivity.this, 0,
-                new Intent(MainActivity.this, ResetAtMidnightReceiver.class),
-                PendingIntent.FLAG_NO_CREATE) != null);
+
+
+        boolean alarmUp = (PendingIntent.getBroadcast(MainActivity.this, 20,
+                new Intent(MainActivity.this, ResetAndShowNotificationReceiver.class),
+                PendingIntent.FLAG_CANCEL_CURRENT) != null);
         if (!alarmUp) {
+            Log.d("NotificationTest", "configureResetRestaurantAtMidday: set alarm");
             AlarmManager alarmManager= (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(MainActivity.this, ResetAtMidnightReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            Intent alarmIntent = new Intent(this, ResetAndShowNotificationReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 20, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, midnightCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        } else {
+            Log.d("NotificationTest", "configureResetRestaurantAtMidday: alarm already set");
         }
     }
 
